@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+  server:
+    container_name: server
+    depends_on:
+      - db
+    build:
+      context: ./server
+      target: dev
+    volumes:
+      - ./server:/app
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+      - 9229:9229
+    command: npm run start:dev
+    env_file:
+      - .env
+    networks:
+      - database
+      - frontend
+  client:
+    container_name: client
+    build: 
+      context: ./client
+      target: dev
+    volumes:
+      - ./client:/app
+    command: npm start
+    ports:
+      - 3000:3000
+    networks:
+      - frontend
+    environment:
+      - WATCHPACK_POLLING=true
+  db:
+    restart: always
+    container_name: db
+    image: postgres
+    environment:
+      - PSQL_HOST=db
+      - PSQL_USER=postgres
+      - PSQL_PASSWORD=postgres
+      - PSQL_DB=chat
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    ports: 
+      - 5432:5432
+    networks:
+      - database
+
+networks:
+  database:
+  frontend:
+volumes:
+  dbdata:
+
+      
