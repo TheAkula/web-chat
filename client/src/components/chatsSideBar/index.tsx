@@ -37,6 +37,5 @@ export const ChatsSideBar = () => {
 };
 
 const StyledChatsSideBar = styled.div`
-  width: 400px;
   background-color: ${baseTheme.colors.bg1};
 `;

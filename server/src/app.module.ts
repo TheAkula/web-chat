@@ -3,7 +3,6 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
-import { DbModule } from './db/db.module';
 import { Chat } from './models/chat.model';
 import { Message } from './models/message.model';
 import { User } from './models/user.model';
@@ -21,7 +20,6 @@ import { User } from './models/user.model';
       models: [Chat, Message, User],
       autoLoadModels: true,
     }),
-    DbModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,

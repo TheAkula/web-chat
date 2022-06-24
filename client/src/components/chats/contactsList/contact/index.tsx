@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { baseTheme } from "../../../../theme/baseTheme";
 import { Contact as ContactType } from "../../../../types";
 
 export const Contact = ({
@@ -23,9 +24,11 @@ export const Contact = ({
 const StyledContact = styled.div`
   height: 70px;
   display: flex;
-  padding: 0 10px;
+  padding: 0 20px;
   align-items: center;
   gap: 20px;
+  cursor: pointer;
+  border-bottom: 1px solid ${baseTheme.colors.line};
 
   .image-container {
     border-radius: 50%;
@@ -47,7 +50,7 @@ const StyledContact = styled.div`
     }
 
     .prev-message {
-      color: #c2c2c2;
+      color: ${baseTheme.colors.text.content};
       font-weight: 500;
     }
   }
