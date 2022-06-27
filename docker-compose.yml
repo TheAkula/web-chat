@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 
 services:
   server:
@@ -21,7 +21,7 @@ services:
       - frontend
   client:
     container_name: client
-    build: 
+    build:
       context: ./client
       target: dev
     volumes:
@@ -39,12 +39,12 @@ services:
     image: postgres
     environment:
       - PSQL_HOST=db
-      - PSQL_USER=postgres
-      - PSQL_PASSWORD=postgres
-      - PSQL_DB=chat
+      - POSTGRESS_USER=postgres
+      - POSTGRESS_PASSWORD=postgres
+      - POSTGRESS_DB=chat
     volumes:
       - dbdata:/var/lib/postgresql/data
-    ports: 
+    ports:
       - 5432:5432
     networks:
       - database
@@ -54,5 +54,3 @@ networks:
   frontend:
 volumes:
   dbdata:
-
-      

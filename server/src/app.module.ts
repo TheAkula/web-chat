@@ -1,33 +1,37 @@
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
-import { SequelizeModule } from '@nestjs/sequelize';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
-import { Chat } from './models/chat.model';
-import { Message } from './models/message.model';
-import { User } from './models/user.model';
+import { UsersModule } from './users/users.module';
+import { ChatsModule } from './chats/chats.module';
+import { MessagesModule } from './messages/messages.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
-    SequelizeModule.forRoot({
-      dialect: 'postgres',
-      host: process.env.PSQL_HOST || 'db',
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.PSQL_HOST || 'localhost',
       port: 5432,
       username: 'postgres',
       password: 'postgres',
       database: 'chat',
+      autoLoadEntities: true,
       synchronize: true,
-      models: [Chat, Message, User],
-      autoLoadModels: true,
+      dropSchema: true,
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      playground: false,
       subscriptions: {
         'graphql-ws': true,
       },
     }),
+    UsersModule,
+    ChatsModule,
+    MessagesModule,
   ],
 })
 export class AppModule {}
