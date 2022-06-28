@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { ChatsModule } from './chats/chats.module';
 import { MessagesModule } from './messages/messages.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,7 +19,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       database: 'chat',
       autoLoadEntities: true,
       synchronize: true,
-      dropSchema: true,
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
@@ -32,6 +32,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     UsersModule,
     ChatsModule,
     MessagesModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
