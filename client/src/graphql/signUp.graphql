@@ -13,5 +13,7 @@ mutation signUp(
     id
     firstName
     lastName
+    userToken
+    email
   }
 }

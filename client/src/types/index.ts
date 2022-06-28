@@ -1,3 +1,5 @@
+import { SignUpMutation } from "../generated/graphql";
+
 export interface Contact {
   imageUrl: string;
   title: string;
@@ -17,3 +19,5 @@ export interface Message {
   date: Date;
   id: string;
 }
+
+export type AuthContextType = Omit<SignUpMutation["signUp"], "__typename">;

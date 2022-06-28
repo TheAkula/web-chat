@@ -1,10 +1,9 @@
-import { useEffect } from "react";
-import { MainLayout } from "./layouts/mainLayout";
+import { RootRoutes } from "./navigation/root";
 
 function App() {
   return (
     <div className="App">
-      <MainLayout />
+      <RootRoutes />
     </div>
   );
 }
