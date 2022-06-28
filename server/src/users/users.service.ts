@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { User } from 'src/models/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,21 +11,11 @@ export class UsersService {
   ) {}
 
   async findUserById(id: string): Promise<User> {
-    const user = await this.userRepository.findOneBy({ id });
-    if (!user) {
-      throw new UnauthorizedException(`User with id "${id}" does not exist`);
-    }
-    return user;
+    return this.userRepository.findOneBy({ id });
   }
 
   async findUserByEmail(email: string): Promise<User> {
-    const user = await this.userRepository.findOneBy({ email });
-    if (!user) {
-      throw new UnauthorizedException(
-        `User with email "${email}" does not exist`,
-      );
-    }
-    return user;
+    return this.userRepository.findOneBy({ email });
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {

@@ -19,11 +19,8 @@ export class User {
   chats: Chat[];
 
   @Field()
-  password: string;
-
-  @Field()
   email: string;
 
   @Field()
-  salt: string;
+  userToken?: string;
 }

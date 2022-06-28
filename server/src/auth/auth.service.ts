@@ -1,11 +1,12 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { SignUpDto } from './dto/signup.dto';
-import { User as UserModel } from 'src/models/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { AuthenticationError } from 'apollo-server-express';
 import { pbkdf2Sync, randomBytes } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
 import { SignInDto } from './dto/signin.dto';
+import { User } from 'src/users/user.model';
+import { ValidateByEmailDto } from './dto/validateByEmail.dto';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +15,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signUp(signUpDto: SignUpDto): Promise<UserModel> {
+  async signUp(signUpDto: SignUpDto): Promise<User> {
     const { firstName, lastName, password, email } = signUpDto;
     const user = await this.userService.findUserByEmail(email);
     if (user) {
@@ -25,13 +26,20 @@ export class AuthService {
 
     const salt = randomBytes(16).toString('hex');
     const hash = pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString('hex');
-    return this.userService.createUser({
+    const newUser = await this.userService.createUser({
       salt,
       password: hash,
       firstName,
       lastName,
       email,
     });
+    {
+      const { password, salt, ...user } = newUser;
+      return {
+        ...user,
+        userToken: this.jwtService.sign({ id: newUser.id, email }),
+      };
+    }
   }
 
   async signIn(signInDto: SignInDto) {
@@ -41,12 +49,17 @@ export class AuthService {
       email: user.email,
     };
     return {
-      access_token: this.jwtService.sign(payload),
+      userToken: this.jwtService.sign(payload),
     };
   }
 
-  async validateByEmail({ email, password }: SignInDto) {
+  async validateByEmail({ email, password }: ValidateByEmailDto) {
     const user = await this.userService.findUserByEmail(email);
+    if (!user) {
+      throw new UnauthorizedException(
+        `User with email ${email} does not exist`,
+      );
+    }
     const hash = pbkdf2Sync(password, user.salt, 1000, 64, 'sha512').toString(
       'hex',
     );
