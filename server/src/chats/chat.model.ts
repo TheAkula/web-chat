@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { ChatsGroup } from 'src/chats-groups/chats-group.model';
 import { Message } from 'src/messages/message.model';
 import { User } from 'src/users/user.model';
 
@@ -15,4 +16,7 @@ export class Chat {
 
   @Field(() => [Message])
   messages: Message[];
+
+  @Field(() => ChatsGroup)
+  chatsGroup: ChatsGroup;
 }

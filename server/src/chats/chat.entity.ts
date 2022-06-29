@@ -1,4 +1,4 @@
-import { Message } from './message.entity';
+import { Message } from '../messages/message.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -6,8 +6,10 @@ import {
   Column,
   ManyToMany,
   JoinTable,
+  ManyToOne,
 } from 'typeorm';
-import { User } from 'src/models/user.entity';
+import { User } from 'src/users/user.entity';
+import { ChatsGroup } from 'src/chats-groups/chats-group.entity';
 
 @Entity()
 export class Chat {
@@ -23,4 +25,7 @@ export class Chat {
   @ManyToMany(() => User, (user) => user.chats)
   @JoinTable()
   users: User[];
+
+  @ManyToOne(() => ChatsGroup, (chatsGroup) => chatsGroup.id)
+  chatsGroup: ChatsGroup;
 }
