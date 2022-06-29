@@ -18,7 +18,6 @@ export const ChatMessages = ({ messages }: ChatMessagesProps) => {
 };
 
 const StyledChatMessages = styled.div`
-  background-color: ${baseTheme.colors.bg2};
   overflow-y: auto;
   display: flex;
   padding: 20px;

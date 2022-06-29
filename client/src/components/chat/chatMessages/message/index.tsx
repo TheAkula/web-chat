@@ -13,7 +13,7 @@ export const Message = ({ authorName, content }: MessageType) => {
 
 const StyledMessage = styled.div`
   padding: 10px 15px;
-  background-color: ${baseTheme.colors.bg3};
+  background-color: #464646;
   border-radius: 10px;
   width: fit-content;
   max-width: 70%;
