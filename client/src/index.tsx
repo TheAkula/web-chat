@@ -5,6 +5,7 @@ import { GlobalStyles } from "./theme/global";
 import { BrowserRouter as Router } from "react-router-dom";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { AuthContextProvider } from "./context/auth-context";
+import { ModalContextProvider } from "./context/modal-context";
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
@@ -18,10 +19,12 @@ root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
       <AuthContextProvider>
-        <Router>
-          <App />
-          <GlobalStyles />
-        </Router>
+        <ModalContextProvider>
+          <Router>
+            <App />
+            <GlobalStyles />
+          </Router>
+        </ModalContextProvider>
       </AuthContextProvider>
     </ApolloProvider>
   </React.StrictMode>
