@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { baseTheme } from "../../theme/baseTheme";
+import { AddChatGroup } from "./addChatGroup";
 import { ChatGroup } from "./chatGroup";
 
 export const ChatGroupSideBar = () => {
@@ -8,6 +9,7 @@ export const ChatGroupSideBar = () => {
   return (
     <StyledSideBar>
       <ChatGroup title="Chat" chatGroupId="1" clicked={onClickedHandler} />
+      <AddChatGroup />
     </StyledSideBar>
   );
 };

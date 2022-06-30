@@ -34,7 +34,9 @@ const StyledModal = styled.div<ComponentWithShow>`
   background-color: ${baseTheme.colors.bg2};
   padding: 20px;
   position: absolute;
+  width: 600px;
   left: 50%;
+  border-radius: 10px;
   top: 50%;
   transform: translate(-50%, -50%);
 `;

@@ -1,3 +1,4 @@
+import { UseGuards } from '@nestjs/common';
 import {
   Resolver,
   Query,
@@ -5,27 +6,47 @@ import {
   ResolveField,
   Parent,
   Mutation,
+  Subscription,
 } from '@nestjs/graphql';
 import { ChatLink } from 'src/chats/chat-link.model';
-import { Chat } from 'src/chats/chat.model';
 import { UserLink } from 'src/users/user-link.model';
-import { User } from 'src/users/user.model';
 import { ChatsGroup } from './chats-group.model';
 import { ChatsGroupsService } from './chats-groups.service';
-import { CreateChatsGroupArgs } from './dto/create-chats-group.dto';
+import { CreateChatsGroupArgs } from './dto/create-chats-group.args';
+import { PubSubProvider } from 'src/pub-sub';
+import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
+import { CurrentUser } from 'src/auth/current-user.decorator';
+import { CurrentUser as CurrentUserModel } from 'src/auth/current-user.model';
 
 @Resolver(() => ChatsGroup)
 export class ChatsGroupsResolver {
-  constructor(private chatsGroupsService: ChatsGroupsService) {}
+  constructor(
+    private chatsGroupsService: ChatsGroupsService,
+    private pubSub: PubSubProvider,
+  ) {}
 
   @Query(() => ChatsGroup, { name: 'chatsGroups' })
   getChatsGroup(@Args('id') id: string): Promise<ChatsGroup> {
     return this.chatsGroupsService.getChatsGroup(id);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => ChatsGroup)
-  createChatsGroup(@Args() createChatsGroupDto: CreateChatsGroupArgs) {
-    return this.chatsGroupsService.createChatsGroup(createChatsGroupDto);
+  async createChatsGroup(
+    @Args() createChatsGroupArgs: CreateChatsGroupArgs,
+    @CurrentUser() { userId }: CurrentUserModel,
+  ) {
+    const newChat = await this.chatsGroupsService.createChatsGroup({
+      ...createChatsGroupArgs,
+      userId,
+    });
+    this.pubSub.publish('CHATS_GROUP_CREATED', { chatsGroupdCreated: newChat });
+    return newChat;
+  }
+
+  @Subscription(() => ChatsGroup, { name: 'chatsGroupCreated' })
+  chatsGroupAdded() {
+    return this.pubSub.asyncIterator('CHATS_GROUP_CREATED');
   }
 
   @ResolveField('chats', () => [ChatLink])

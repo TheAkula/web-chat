@@ -2,8 +2,8 @@ import styled from "styled-components";
 import { baseTheme } from "../../theme/baseTheme";
 
 interface ChatGroupProps {
-  chatGroupId: string;
-  clicked: (id: string) => void;
+  chatGroupId?: string;
+  clicked: (id?: string) => void;
   imgUrl?: string;
   title: string;
 }
@@ -32,6 +32,7 @@ const StyledChatGroup = styled.div`
   background-color: ${baseTheme.colors.bg1};
   justify-content: center;
   display: flex;
+  margin-bottom: 10px;
   align-items: center;
   font-weight: 500;
   color: ${baseTheme.colors.white};

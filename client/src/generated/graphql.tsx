@@ -23,10 +23,33 @@ export type Auth = {
 
 export type Chat = {
   __typename?: 'Chat';
+  chatsGroup: ChatsGroupLink;
   id: Scalars['String'];
-  messages: Array<Message>;
+  messages: Array<MessageLink>;
   name: Scalars['String'];
-  users: Array<User>;
+  users: Array<UserLink>;
+};
+
+export type ChatLink = {
+  __typename?: 'ChatLink';
+  id: Scalars['String'];
+  name: Scalars['String'];
+};
+
+export type ChatsGroup = {
+  __typename?: 'ChatsGroup';
+  chats: Array<ChatLink>;
+  id: Scalars['String'];
+  imgUrl?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  users: Array<UserLink>;
+};
+
+export type ChatsGroupLink = {
+  __typename?: 'ChatsGroupLink';
+  id: Scalars['String'];
+  imgUrl?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
 };
 
 export type Message = {
@@ -39,10 +62,32 @@ export type Message = {
   isRead: Scalars['Boolean'];
 };
 
+export type MessageLink = {
+  __typename?: 'MessageLink';
+  content: Scalars['String'];
+  date: Scalars['DateTime'];
+  id: Scalars['String'];
+  isRead: Scalars['Boolean'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  createChat: Chat;
+  createChatsGroup: ChatsGroup;
   login: Auth;
   signUp: User;
+};
+
+
+export type MutationCreateChatArgs = {
+  name: Scalars['String'];
+  userId: Scalars['String'];
+};
+
+
+export type MutationCreateChatsGroupArgs = {
+  imgUrl?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
 };
 
 
@@ -61,7 +106,13 @@ export type MutationSignUpArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  chatsGroups: ChatsGroup;
   user: User;
+};
+
+
+export type QueryChatsGroupsArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -69,9 +120,15 @@ export type QueryUserArgs = {
   id: Scalars['String'];
 };
 
+export type Subscription = {
+  __typename?: 'Subscription';
+  chatsGroupCreated: ChatsGroup;
+};
+
 export type User = {
   __typename?: 'User';
-  chats: Array<Chat>;
+  chats: Array<ChatLink>;
+  chatsGroups: Array<ChatsGroupLink>;
   email: Scalars['String'];
   firstName: Scalars['String'];
   id: Scalars['String'];
@@ -79,6 +136,28 @@ export type User = {
   lastName: Scalars['String'];
   userToken: Scalars['String'];
 };
+
+export type UserLink = {
+  __typename?: 'UserLink';
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  id: Scalars['String'];
+  isActive: Scalars['Boolean'];
+  lastName: Scalars['String'];
+};
+
+export type ChatsGroupCreatedSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ChatsGroupCreatedSubscription = { __typename?: 'Subscription', chatsGroupCreated: { __typename?: 'ChatsGroup', id: string, name: string, imgUrl?: string | null, users: Array<{ __typename?: 'UserLink', id: string, email: string }> } };
+
+export type CreateChatsGroupMutationVariables = Exact<{
+  name: Scalars['String'];
+  imgUrl?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type CreateChatsGroupMutation = { __typename?: 'Mutation', createChatsGroup: { __typename?: 'ChatsGroup', id: string } };
 
 export type LoginMutationVariables = Exact<{
   email: Scalars['String'];
@@ -99,6 +178,75 @@ export type SignUpMutationVariables = Exact<{
 export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'User', id: string, firstName: string, lastName: string, userToken: string, email: string } };
 
 
+export const ChatsGroupCreatedDocument = gql`
+    subscription chatsGroupCreated {
+  chatsGroupCreated {
+    id
+    name
+    imgUrl
+    users {
+      id
+      email
+    }
+  }
+}
+    `;
+
+/**
+ * __useChatsGroupCreatedSubscription__
+ *
+ * To run a query within a React component, call `useChatsGroupCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useChatsGroupCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChatsGroupCreatedSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useChatsGroupCreatedSubscription(baseOptions?: Apollo.SubscriptionHookOptions<ChatsGroupCreatedSubscription, ChatsGroupCreatedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<ChatsGroupCreatedSubscription, ChatsGroupCreatedSubscriptionVariables>(ChatsGroupCreatedDocument, options);
+      }
+export type ChatsGroupCreatedSubscriptionHookResult = ReturnType<typeof useChatsGroupCreatedSubscription>;
+export type ChatsGroupCreatedSubscriptionResult = Apollo.SubscriptionResult<ChatsGroupCreatedSubscription>;
+export const CreateChatsGroupDocument = gql`
+    mutation CreateChatsGroup($name: String!, $imgUrl: String) {
+  createChatsGroup(name: $name, imgUrl: $imgUrl) {
+    id
+  }
+}
+    `;
+export type CreateChatsGroupMutationFn = Apollo.MutationFunction<CreateChatsGroupMutation, CreateChatsGroupMutationVariables>;
+
+/**
+ * __useCreateChatsGroupMutation__
+ *
+ * To run a mutation, you first call `useCreateChatsGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateChatsGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createChatsGroupMutation, { data, loading, error }] = useCreateChatsGroupMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      imgUrl: // value for 'imgUrl'
+ *   },
+ * });
+ */
+export function useCreateChatsGroupMutation(baseOptions?: Apollo.MutationHookOptions<CreateChatsGroupMutation, CreateChatsGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateChatsGroupMutation, CreateChatsGroupMutationVariables>(CreateChatsGroupDocument, options);
+      }
+export type CreateChatsGroupMutationHookResult = ReturnType<typeof useCreateChatsGroupMutation>;
+export type CreateChatsGroupMutationResult = Apollo.MutationResult<CreateChatsGroupMutation>;
+export type CreateChatsGroupMutationOptions = Apollo.BaseMutationOptions<CreateChatsGroupMutation, CreateChatsGroupMutationVariables>;
 export const LoginDocument = gql`
     mutation login($email: String!, $password: String!) {
   login(email: $email, password: $password) {

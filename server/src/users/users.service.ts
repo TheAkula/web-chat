@@ -3,7 +3,6 @@ import { User } from 'src/users/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Chat } from 'src/chats/chat.model';
 import { ChatLink } from 'src/chats/chat-link.model';
 import { ChatsGroupLink } from 'src/chats-groups/chat-group-link.model';
 

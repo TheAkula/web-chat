@@ -6,7 +6,6 @@ import { AuthService } from './auth.service';
 import { SignInArgs as SignInArgsType } from './dto/signin.args';
 import { SignUpArgs } from './dto/signup.args';
 import { LocalAuthGuard } from './local-auth.guard';
-import { SignInArgs } from './signin-args.decorator';
 
 @Resolver()
 export class AuthResolver {
@@ -19,7 +18,7 @@ export class AuthResolver {
 
   @UseGuards(LocalAuthGuard)
   @Mutation(() => Auth)
-  async login(@Args() @SignInArgs() args: SignInArgsType) {
+  async login(@Args() args: SignInArgsType) {
     return this.authService.signIn(args);
   }
 }

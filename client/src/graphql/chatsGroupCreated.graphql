@@ -1,0 +1,11 @@
+subscription chatsGroupCreated {
+  chatsGroupCreated {
+    id
+    name
+    imgUrl
+    users {
+      id
+      email
+    }
+  }
+}

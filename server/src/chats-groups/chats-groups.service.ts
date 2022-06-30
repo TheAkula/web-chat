@@ -1,14 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatLink } from 'src/chats/chat-link.model';
-import { Chat } from 'src/chats/chat.model';
 import { UserLink } from 'src/users/user-link.model';
-import { User } from 'src/users/user.model';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { ChatsGroup } from './chats-group.entity';
 import { ChatsGroup as ChatsGroupModel } from './chats-group.model';
-import { CreateChatsGroupArgs } from './dto/create-chats-group.dto';
+import { CreateChatsGroupDto } from './dto/create-chats-group.dto';
 
 @Injectable()
 export class ChatsGroupsService {
@@ -52,7 +50,7 @@ export class ChatsGroupsService {
     name,
     userId,
     imgUrl,
-  }: CreateChatsGroupArgs): Promise<ChatsGroupModel> {
+  }: CreateChatsGroupDto): Promise<ChatsGroupModel> {
     const user = await this.usersService.findUserById(userId);
     if (!user) {
       throw new NotFoundException(`User with id "${userId} not found"`);

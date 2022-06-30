@@ -1,0 +1,5 @@
+mutation CreateChatsGroup($name: String!, $imgUrl: String) {
+  createChatsGroup(name: $name, imgUrl: $imgUrl) {
+    id
+  }
+}

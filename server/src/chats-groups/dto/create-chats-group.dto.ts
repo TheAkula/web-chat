@@ -1,13 +1,5 @@
-import { ArgsType, Field } from '@nestjs/graphql';
-
-@ArgsType()
-export class CreateChatsGroupArgs {
-  @Field()
-  name: string;
-
-  @Field({ nullable: true })
-  imgUrl?: string;
-
-  @Field()
+export class CreateChatsGroupDto {
   userId: string;
+  name: string;
+  imgUrl?: string;
 }

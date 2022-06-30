@@ -16,7 +16,4 @@ export class UserLink {
 
   @Field()
   email: string;
-
-  @Field()
-  userToken?: string;
 }

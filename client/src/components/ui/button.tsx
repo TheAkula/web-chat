@@ -6,7 +6,7 @@ export const Button = styled.button`
   outline: none;
   background-color: #439ae6;
   color: ${baseTheme.colors.white};
-  height: 60px;
+  height: 50px;
   border-radius: 6px;
   padding: 0px 15px;
   font-size: 20px;
