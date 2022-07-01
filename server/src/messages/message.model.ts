@@ -10,15 +10,15 @@ export class Message {
   @Field(() => User)
   author: User;
 
-  @Field({ defaultValue: false })
-  isRead: boolean;
-
-  @Field(() => String)
-  content: string;
-
   @Field()
-  date: Date;
+  content: string;
 
   @Field(() => Chat)
   chat: Chat;
+
+  @Field()
+  createdAt: Date;
+
+  @Field()
+  updatedAt: Date;
 }

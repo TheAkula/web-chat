@@ -1,0 +1,12 @@
+query messages($id: String!) {
+  messages(id: $id) {
+    id
+    author {
+      id
+      firstName
+      lastName
+    }
+    content
+    updatedAt
+  }
+}

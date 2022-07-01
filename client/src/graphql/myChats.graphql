@@ -1,0 +1,6 @@
+query myChats($id: String!) {
+  chats(id: $id) {
+    id
+    name
+  }
+}

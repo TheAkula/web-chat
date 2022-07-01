@@ -5,12 +5,12 @@ export class MessageLink {
   @Field()
   id: string;
 
-  @Field({ defaultValue: false })
-  isRead: boolean;
-
   @Field(() => String)
   content: string;
 
   @Field()
-  date: Date;
+  createdAt: Date;
+
+  @Field()
+  updatedAt: Date;
 }

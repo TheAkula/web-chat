@@ -26,6 +26,6 @@ export class Chat {
   @JoinTable()
   users: User[];
 
-  @ManyToOne(() => ChatsGroup, (chatsGroup) => chatsGroup.id)
+  @ManyToOne(() => ChatsGroup)
   chatsGroup: ChatsGroup;
 }

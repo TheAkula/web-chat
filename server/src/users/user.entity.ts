@@ -1,5 +1,11 @@
 import { ChatsGroup } from 'src/chats-groups/chats-group.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { Chat } from '../chats/chat.entity';
 
 @Entity()
@@ -20,6 +26,7 @@ export class User {
   chats: Chat[];
 
   @ManyToMany(() => ChatsGroup, (chatGroup) => chatGroup.users)
+  @JoinTable()
   chatsGroups: ChatsGroup[];
 
   @Column()

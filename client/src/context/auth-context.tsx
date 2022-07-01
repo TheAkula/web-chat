@@ -1,10 +1,10 @@
 import React, { Reducer, useContext, useReducer } from "react";
-import { USER_TOKEN_KEY } from "../constants";
+import { LocalStorageKeys } from "../constants";
 import { AuthContextType } from "../types";
 
 interface AuthAction {
   type: AuthActions;
-  payload: any;
+  payload?: any;
 }
 
 type AuthContextValue = {
@@ -15,7 +15,7 @@ const initialState: AuthContextType = {
   id: "",
   firstName: "",
   lastName: "",
-  userToken: window.localStorage.getItem(USER_TOKEN_KEY) || "",
+  userToken: window.localStorage.getItem(LocalStorageKeys.USER_TOKEN_KEY) || "",
   email: "",
 };
 
@@ -40,6 +40,11 @@ const reducer: Reducer<AuthContextType, AuthAction> = (state, action) => {
     case AuthActions.SIGNUP:
       return {
         ...action.payload,
+      };
+    case AuthActions.LOGOUT:
+      localStorage.setItem(LocalStorageKeys.USER_TOKEN_KEY, "");
+      return {
+        ...initialState,
       };
     default:
       throw new Error(`Invalid action type: "${action.type}"`);

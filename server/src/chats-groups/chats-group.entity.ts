@@ -3,7 +3,6 @@ import { User } from 'src/users/user.entity';
 import {
   Column,
   Entity,
-  JoinTable,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -24,6 +23,5 @@ export class ChatsGroup {
   imgUrl: string;
 
   @ManyToMany(() => User, (user) => user.chatsGroups)
-  @JoinTable()
   users: User[];
 }

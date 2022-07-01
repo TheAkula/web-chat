@@ -1,1 +1,5 @@
-export const USER_TOKEN_KEY = "USER_TOKEN_KEY";
+export enum LocalStorageKeys {
+  USER_TOKEN_KEY = "USER_TOKEN_KEY",
+  CHOSEN_CHATS_GROUP = "CHOSEN_CHATS_GROUP",
+  CHOSEN_CHAT = "CHOSEN_CHAT",
+}

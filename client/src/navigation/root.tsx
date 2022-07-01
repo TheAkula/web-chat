@@ -15,6 +15,7 @@ export const RootRoutes = () => {
           <>
             <Route path="/" element={<MainLayout />} />
             <Route path="/profile" element={<div>Profile page</div>} />
+            <Route path="*" element={<Navigate to="/" />} />
           </>
         ) : (
           <>

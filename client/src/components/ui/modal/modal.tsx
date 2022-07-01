@@ -3,10 +3,10 @@ import { useModalContext } from "../../../context/modal-context";
 import { baseTheme } from "../../../theme/baseTheme";
 
 export const Modal = () => {
-  const { isShow, content } = useModalContext();
+  const { isShow, content, close } = useModalContext();
 
   return (
-    <Background show={isShow}>
+    <Background show={isShow} onClick={close}>
       <StyledModal show={isShow}>{content}</StyledModal>
     </Background>
   );
@@ -22,15 +22,17 @@ const Background = styled.div<ComponentWithShow>`
   visibility: ${({ show }) => (show ? "visible" : "hidden")};
   background-color: ${baseTheme.colors.modalBg};
   position: absolute;
-  transition: visibility 0.3s;
+  transition: opacity 0.3s;
   left: 0;
   top: 0;
+  opacity: ${({ show }) => (show ? "1" : "0")};
 `;
 
 const StyledModal = styled.div<ComponentWithShow>`
   border: 10px;
+  opacity: ${({ show }) => (show ? "1" : "0")};
   visibility: ${({ show }) => (show ? "visible" : "hidden")};
-  transition: visibility 0.3s;
+  transition: opacity 0.3s;
   background-color: ${baseTheme.colors.bg2};
   padding: 20px;
   position: absolute;

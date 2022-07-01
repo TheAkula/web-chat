@@ -2,11 +2,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatLink } from 'src/chats/chat-link.model';
 import { UserLink } from 'src/users/user-link.model';
+import { User } from 'src/users/user.model';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { ChatsGroup } from './chats-group.entity';
 import { ChatsGroup as ChatsGroupModel } from './chats-group.model';
 import { CreateChatsGroupDto } from './dto/create-chats-group.dto';
+import { User as UserEntity } from '../users/user.entity';
 
 @Injectable()
 export class ChatsGroupsService {
@@ -48,18 +50,23 @@ export class ChatsGroupsService {
 
   async createChatsGroup({
     name,
-    userId,
+    user,
     imgUrl,
   }: CreateChatsGroupDto): Promise<ChatsGroupModel> {
-    const user = await this.usersService.findUserById(userId);
-    if (!user) {
-      throw new NotFoundException(`User with id "${userId} not found"`);
-    }
     const newChatsGroup = this.chatsGroupsRepository.create({
       imgUrl,
       name,
       users: [user],
     });
     return await this.chatsGroupsRepository.save(newChatsGroup);
+  }
+
+  async getMyChatsGroups(user: User): Promise<ChatsGroup[]> {
+    return this.chatsGroupsRepository
+      .createQueryBuilder('chatsgroup')
+      .innerJoin('chatsgroup.users', 'user', 'user.id = :userId', {
+        userId: user.id,
+      })
+      .getMany();
   }
 }

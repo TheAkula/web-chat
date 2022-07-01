@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEventHandler, useState } from "react";
 import styled from "styled-components";
 import { useCreateChatsGroupMutation } from "../../generated/graphql";
 import { Button } from "../ui/button";
@@ -11,7 +11,8 @@ export const AddChatsGroupModal = () => {
   const [createChatsGroupMutation, { loading, error, data }] =
     useCreateChatsGroupMutation();
 
-  const onSubmitedHandler = () => {
+  const onSubmitedHandler: FormEventHandler = (e) => {
+    e.preventDefault();
     createChatsGroupMutation({
       variables: {
         name,

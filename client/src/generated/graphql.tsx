@@ -23,7 +23,7 @@ export type Auth = {
 
 export type Chat = {
   __typename?: 'Chat';
-  chatsGroup: ChatsGroupLink;
+  chatsGroup: ChatsGroup;
   id: Scalars['String'];
   messages: Array<MessageLink>;
   name: Scalars['String'];
@@ -54,32 +54,34 @@ export type ChatsGroupLink = {
 
 export type Message = {
   __typename?: 'Message';
-  author: User;
-  chat: Chat;
+  author: UserLink;
+  chat: ChatLink;
   content: Scalars['String'];
-  date: Scalars['DateTime'];
+  createdAt: Scalars['DateTime'];
   id: Scalars['String'];
-  isRead: Scalars['Boolean'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type MessageLink = {
   __typename?: 'MessageLink';
   content: Scalars['String'];
-  date: Scalars['DateTime'];
+  createdAt: Scalars['DateTime'];
   id: Scalars['String'];
-  isRead: Scalars['Boolean'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   createChat: Chat;
   createChatsGroup: ChatsGroup;
+  createMessage: Message;
   login: Auth;
   signUp: User;
 };
 
 
 export type MutationCreateChatArgs = {
+  chatsGroupId: Scalars['String'];
   name: Scalars['String'];
   userId: Scalars['String'];
 };
@@ -88,6 +90,12 @@ export type MutationCreateChatArgs = {
 export type MutationCreateChatsGroupArgs = {
   imgUrl?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
+};
+
+
+export type MutationCreateMessageArgs = {
+  chatId: Scalars['String'];
+  content: Scalars['String'];
 };
 
 
@@ -106,12 +114,25 @@ export type MutationSignUpArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  chats: Array<Chat>;
   chatsGroups: ChatsGroup;
+  messages: Array<Message>;
+  myChatsGroups: Array<ChatsGroup>;
   user: User;
 };
 
 
+export type QueryChatsArgs = {
+  id: Scalars['String'];
+};
+
+
 export type QueryChatsGroupsArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryMessagesArgs = {
   id: Scalars['String'];
 };
 
@@ -123,6 +144,7 @@ export type QueryUserArgs = {
 export type Subscription = {
   __typename?: 'Subscription';
   chatsGroupCreated: ChatsGroup;
+  messageCreated: Message;
 };
 
 export type User = {
@@ -166,6 +188,25 @@ export type LoginMutationVariables = Exact<{
 
 
 export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'Auth', userToken: string } };
+
+export type MessagesQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type MessagesQuery = { __typename?: 'Query', messages: Array<{ __typename?: 'Message', id: string, content: string, updatedAt: any, author: { __typename?: 'UserLink', id: string, firstName: string, lastName: string } }> };
+
+export type MyChatsQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type MyChatsQuery = { __typename?: 'Query', chats: Array<{ __typename?: 'Chat', id: string, name: string }> };
+
+export type MyChatsGroupsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyChatsGroupsQuery = { __typename?: 'Query', myChatsGroups: Array<{ __typename?: 'ChatsGroup', id: string, name: string, imgUrl?: string | null }> };
 
 export type SignUpMutationVariables = Exact<{
   firstName: Scalars['String'];
@@ -281,6 +322,120 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const MessagesDocument = gql`
+    query messages($id: String!) {
+  messages(id: $id) {
+    id
+    author {
+      id
+      firstName
+      lastName
+    }
+    content
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useMessagesQuery__
+ *
+ * To run a query within a React component, call `useMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMessagesQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useMessagesQuery(baseOptions: Apollo.QueryHookOptions<MessagesQuery, MessagesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MessagesQuery, MessagesQueryVariables>(MessagesDocument, options);
+      }
+export function useMessagesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MessagesQuery, MessagesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MessagesQuery, MessagesQueryVariables>(MessagesDocument, options);
+        }
+export type MessagesQueryHookResult = ReturnType<typeof useMessagesQuery>;
+export type MessagesLazyQueryHookResult = ReturnType<typeof useMessagesLazyQuery>;
+export type MessagesQueryResult = Apollo.QueryResult<MessagesQuery, MessagesQueryVariables>;
+export const MyChatsDocument = gql`
+    query myChats($id: String!) {
+  chats(id: $id) {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useMyChatsQuery__
+ *
+ * To run a query within a React component, call `useMyChatsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyChatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMyChatsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useMyChatsQuery(baseOptions: Apollo.QueryHookOptions<MyChatsQuery, MyChatsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MyChatsQuery, MyChatsQueryVariables>(MyChatsDocument, options);
+      }
+export function useMyChatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyChatsQuery, MyChatsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MyChatsQuery, MyChatsQueryVariables>(MyChatsDocument, options);
+        }
+export type MyChatsQueryHookResult = ReturnType<typeof useMyChatsQuery>;
+export type MyChatsLazyQueryHookResult = ReturnType<typeof useMyChatsLazyQuery>;
+export type MyChatsQueryResult = Apollo.QueryResult<MyChatsQuery, MyChatsQueryVariables>;
+export const MyChatsGroupsDocument = gql`
+    query myChatsGroups {
+  myChatsGroups {
+    id
+    name
+    imgUrl
+  }
+}
+    `;
+
+/**
+ * __useMyChatsGroupsQuery__
+ *
+ * To run a query within a React component, call `useMyChatsGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyChatsGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMyChatsGroupsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMyChatsGroupsQuery(baseOptions?: Apollo.QueryHookOptions<MyChatsGroupsQuery, MyChatsGroupsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MyChatsGroupsQuery, MyChatsGroupsQueryVariables>(MyChatsGroupsDocument, options);
+      }
+export function useMyChatsGroupsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyChatsGroupsQuery, MyChatsGroupsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MyChatsGroupsQuery, MyChatsGroupsQueryVariables>(MyChatsGroupsDocument, options);
+        }
+export type MyChatsGroupsQueryHookResult = ReturnType<typeof useMyChatsGroupsQuery>;
+export type MyChatsGroupsLazyQueryHookResult = ReturnType<typeof useMyChatsGroupsLazyQuery>;
+export type MyChatsGroupsQueryResult = Apollo.QueryResult<MyChatsGroupsQuery, MyChatsGroupsQueryVariables>;
 export const SignUpDocument = gql`
     mutation signUp($firstName: String!, $lastName: String!, $password: String!, $email: String!) {
   signUp(

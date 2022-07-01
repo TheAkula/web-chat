@@ -9,7 +9,7 @@ import {
   SubmitButton,
 } from "../../components/authCard";
 import { Spinner } from "../../components/ui/spinner";
-import { USER_TOKEN_KEY } from "../../constants";
+import { LocalStorageKeys } from "../../constants";
 
 export const SignIn = () => {
   const [loginMutaion, { data, error, loading }] = useLoginMutation();
@@ -27,7 +27,10 @@ export const SignIn = () => {
       onCompleted: (complData) => {
         const { __typename, ...payload } = complData.login;
         authDispatch({ type: AuthActions.LOGIN, payload });
-        window.localStorage.setItem(USER_TOKEN_KEY, complData.login.userToken);
+        window.localStorage.setItem(
+          LocalStorageKeys.USER_TOKEN_KEY,
+          complData.login.userToken
+        );
         navigate("/");
       },
     });

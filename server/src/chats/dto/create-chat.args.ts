@@ -7,4 +7,7 @@ export class CreateChatArgs {
 
   @Field()
   name: string;
+
+  @Field()
+  chatsGroupId: string;
 }

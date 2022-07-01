@@ -1,33 +1,37 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from 'src/chats/chat.entity';
 import { Chat as ChatModel } from './chat.model';
-import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
-import { CreateChatArgs } from './dto/create-chat.args';
 import { UserLink } from 'src/users/user-link.model';
 import { MessageLink } from 'src/messages/message-link.model';
+import { ChatsGroupsService } from 'src/chats-groups/chats-groups.service';
+import { CreateChatDto } from './dto/create-chat.dto';
 
 @Injectable()
 export class ChatsService {
   constructor(
-    private usersService: UsersService,
     @InjectRepository(Chat) private chatsRepository: Repository<Chat>,
+    private chatsGroupsService: ChatsGroupsService,
   ) {}
 
-  async createChat({ userId, name }: CreateChatArgs): Promise<ChatModel> {
-    const user = await this.usersService.findUserById(userId);
-    if (!user) {
-      throw new UnauthorizedException(
-        `User with id "${userId} does not exist"`,
+  async createChat({
+    name,
+    user,
+    chatsGroupId,
+  }: CreateChatDto): Promise<ChatModel> {
+    const chatsGroup = await this.chatsGroupsService.getChatsGroup(
+      chatsGroupId,
+    );
+    if (!chatsGroup) {
+      throw new NotFoundException(
+        `Chats group with id "${chatsGroupId}" not found`,
       );
     }
     const chat = this.chatsRepository.create({
       name,
+      users: [user],
+      chatsGroup: chatsGroup,
     });
     return this.chatsRepository.save(chat);
   }
@@ -53,5 +57,16 @@ export class ChatsService {
       throw new NotFoundException(`Chat with id "${id}" not found`);
     }
     return chat.messages;
+  }
+
+  async getChat(id: string): Promise<ChatModel> {
+    return this.chatsRepository.findOneBy({ id });
+  }
+
+  async getChats(id: string): Promise<ChatModel[]> {
+    return await this.chatsRepository.find({
+      where: { chatsGroup: { id } },
+      relations: ['chatsGroup'],
+    });
   }
 }

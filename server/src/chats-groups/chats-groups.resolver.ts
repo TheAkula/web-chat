@@ -16,7 +16,7 @@ import { CreateChatsGroupArgs } from './dto/create-chats-group.args';
 import { PubSubProvider } from 'src/pub-sub';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/current-user.decorator';
-import { CurrentUser as CurrentUserModel } from 'src/auth/current-user.model';
+import { User } from 'src/users/user.model';
 
 @Resolver(() => ChatsGroup)
 export class ChatsGroupsResolver {
@@ -31,14 +31,20 @@ export class ChatsGroupsResolver {
   }
 
   @UseGuards(GqlAuthGuard)
+  @Query(() => [ChatsGroup], { name: 'myChatsGroups' })
+  getMyChatsGroups(@CurrentUser() user: User): Promise<ChatsGroup[]> {
+    return this.chatsGroupsService.getMyChatsGroups(user);
+  }
+
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => ChatsGroup)
   async createChatsGroup(
     @Args() createChatsGroupArgs: CreateChatsGroupArgs,
-    @CurrentUser() { userId }: CurrentUserModel,
+    @CurrentUser() user: User,
   ) {
     const newChat = await this.chatsGroupsService.createChatsGroup({
       ...createChatsGroupArgs,
-      userId,
+      user,
     });
     this.pubSub.publish('CHATS_GROUP_CREATED', { chatsGroupdCreated: newChat });
     return newChat;

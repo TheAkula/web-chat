@@ -1,7 +1,7 @@
 import { User } from 'src/users/user.model';
 
-export class CreateChatsGroupDto {
+export class CreateChatDto {
   user: User;
   name: string;
-  imgUrl?: string;
+  chatsGroupId: string;
 }
