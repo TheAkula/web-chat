@@ -1,6 +1,6 @@
 import { useModalContext } from "../../context/modal-context";
 import { AddChatsGroupModal } from "../addChatsGroupModal/addChatsGroupModal";
-import { ChatGroup } from "./chatGroup";
+import { ChatsGroup } from "./chatsGroup";
 
 export const AddChatGroup = () => {
   const { show } = useModalContext();
@@ -9,5 +9,5 @@ export const AddChatGroup = () => {
     show(<AddChatsGroupModal />);
   };
 
-  return <ChatGroup title="+" clicked={onAddedChatGroup} />;
+  return <ChatsGroup name="+" clicked={onAddedChatGroup} />;
 };

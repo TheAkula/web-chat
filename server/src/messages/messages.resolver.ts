@@ -30,18 +30,28 @@ export class MessagesResolver {
     return this.messagesService.getMessages(id);
   }
 
-  @Subscription(() => Message)
+  @Subscription(() => Message, {
+    nullable: true,
+  })
   messageCreated() {
-    this.pubSub.asyncIterator('MESSAGE_CREATED');
+    return this.pubSub.asyncIterator('MESSAGE_CREATED');
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => Message)
-  createMessage(
+  async createMessage(
     @Args() args: CreateMessageArgs,
     @CurrentUser() author: User,
   ): Promise<Message> {
-    return this.messagesService.createMessage({ ...args, author });
+    const newMessage = await this.messagesService.createMessage({
+      ...args,
+      author,
+    });
+    console.log('message created');
+    this.pubSub.publish('MESSAGE_CREATED', {
+      messageCreated: newMessage,
+    });
+    return newMessage;
   }
 
   @ResolveField('chat', () => ChatLink)

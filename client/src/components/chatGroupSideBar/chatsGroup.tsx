@@ -4,14 +4,14 @@ import { baseTheme } from "../../theme/baseTheme";
 interface ChatGroupProps {
   chatGroupId?: string;
   clicked: (id?: string) => void;
-  imgUrl?: string;
-  title: string;
+  imgUrl?: string | null;
+  name: string;
 }
 
-export const ChatGroup = ({
+export const ChatsGroup = ({
   chatGroupId,
   clicked,
-  title,
+  name,
   imgUrl,
 }: ChatGroupProps) => {
   const onClickedHandler = () => {
@@ -19,13 +19,13 @@ export const ChatGroup = ({
   };
 
   return (
-    <StyledChatGroup onClick={onClickedHandler}>
-      {imgUrl ? <img src={imgUrl} alt="" /> : <span>{title}</span>}
-    </StyledChatGroup>
+    <StyledChatsGroup onClick={onClickedHandler}>
+      {imgUrl ? <img src={imgUrl} alt="" /> : <span>{name}</span>}
+    </StyledChatsGroup>
   );
 };
 
-const StyledChatGroup = styled.div`
+const StyledChatsGroup = styled.div`
   width: 60px;
   height: 60px;
   border-radius: 50%;

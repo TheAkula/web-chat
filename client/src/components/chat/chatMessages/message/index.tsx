@@ -1,11 +1,15 @@
 import styled from "styled-components";
 import { baseTheme } from "../../../../theme/baseTheme";
-import { Message as MessageType } from "../../../../types";
 
-export const Message = ({ authorName, content }: MessageType) => {
+interface MessageProps {
+  author: string;
+  content: string;
+}
+
+export const Message = ({ author, content }: MessageProps) => {
   return (
     <StyledMessage>
-      <span className="author">{authorName}</span>
+      <span className="author">{author}</span>
       <p className="content">{content}</p>
     </StyledMessage>
   );

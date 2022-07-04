@@ -50,7 +50,7 @@ export class ChatsGroupsResolver {
     return newChat;
   }
 
-  @Subscription(() => ChatsGroup, { name: 'chatsGroupCreated' })
+  @Subscription(() => ChatsGroup, { name: 'chatsGroupCreated', nullable: true })
   chatsGroupAdded() {
     return this.pubSub.asyncIterator('CHATS_GROUP_CREATED');
   }

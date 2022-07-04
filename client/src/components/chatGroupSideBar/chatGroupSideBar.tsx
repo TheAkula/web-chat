@@ -1,14 +1,24 @@
 import styled from "styled-components";
+import { useAppContext } from "../../context/app-context";
 import { baseTheme } from "../../theme/baseTheme";
 import { AddChatGroup } from "./addChatGroup";
-import { ChatGroup } from "./chatGroup";
+import { ChatsGroup } from "./chatsGroup";
 
 export const ChatGroupSideBar = () => {
+  const { chatsGroups } = useAppContext();
+
   const onClickedHandler = () => {};
 
   return (
     <StyledSideBar>
-      <ChatGroup title="Chat" chatGroupId="1" clicked={onClickedHandler} />
+      {chatsGroups.items &&
+        chatsGroups.items.map((chatsGroup) => (
+          <ChatsGroup
+            key={chatsGroup.id}
+            {...chatsGroup}
+            clicked={onClickedHandler}
+          />
+        ))}
       <AddChatGroup />
     </StyledSideBar>
   );

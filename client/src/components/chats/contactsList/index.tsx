@@ -1,16 +1,12 @@
-import { Contact as ContactType } from "../../../types";
+import { useAppContext } from "../../../context/app-context";
 import { Contact } from "./contact";
 
-interface ContactsListProps {
-  contacts: ContactType[];
-}
+export const ContactsList = () => {
+  const { chats } = useAppContext();
 
-export const ContactsList = ({ contacts }: ContactsListProps) => {
   return (
     <div>
-      {contacts.map((c) => (
-        <Contact key={c.id} {...c} />
-      ))}
+      {chats.items && chats.items.map((c) => <Contact key={c.id} {...c} />)}
     </div>
   );
 };

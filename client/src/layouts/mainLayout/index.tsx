@@ -22,7 +22,7 @@ export const MainLayout = () => {
 const MainWrapper = styled.div`
   height: 100vh;
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 80px 1fr;
 `;
 
 const ChatWrapper = styled.div`

@@ -4,12 +4,16 @@ import {
   ApolloProvider,
   createHttpLink,
   InMemoryCache,
+  split,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { ReactNode, useMemo } from "react";
 import { LocalStorageKeys } from "../constants";
 import { onError } from "@apollo/client/link/error";
 import { AuthActions, useAuthContext } from "./auth-context";
+import { WebSocketLink } from "@apollo/client/link/ws";
+import { SubscriptionClient } from "subscriptions-transport-ws";
+import { getMainDefinition } from "@apollo/client/utilities";
 
 interface MyApolloProviderProps {
   children: ReactNode;
@@ -23,6 +27,16 @@ export const MyApolloProvider = ({ children }: MyApolloProviderProps) => {
       createHttpLink({
         uri: "http://localhost:4000/graphql",
       }),
+    []
+  );
+
+  const wsLink = useMemo(
+    () =>
+      new WebSocketLink(
+        new SubscriptionClient("ws://localhost:4000/graphql", {
+          reconnect: true,
+        })
+      ),
     []
   );
 
@@ -45,19 +59,35 @@ export const MyApolloProvider = ({ children }: MyApolloProviderProps) => {
     () =>
       onError(({ networkError, graphQLErrors }) => {
         if (graphQLErrors) {
-          authDispatch({ type: AuthActions.LOGOUT });
+          // authDispatch({ type: AuthActions.LOGOUT });
         }
       }),
     [authDispatch]
+  );
+
+  const link = useMemo(
+    () =>
+      split(
+        ({ query }) => {
+          const definition = getMainDefinition(query);
+          return (
+            definition.kind === "OperationDefinition" &&
+            definition.operation === "subscription"
+          );
+        },
+        wsLink,
+        httpLink
+      ),
+    [httpLink, wsLink]
   );
 
   const client = useMemo(
     () =>
       new ApolloClient({
         cache: new InMemoryCache(),
-        link: ApolloLink.from([errorLink, authLink, httpLink]),
+        link: authLink.concat(link),
       }),
-    [authLink, errorLink, httpLink]
+    [authLink, link]
   );
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;

@@ -1,21 +1,15 @@
 import styled from "styled-components";
 import { baseTheme } from "../../../../theme/baseTheme";
-import { Contact as ContactType } from "../../../../types";
 
-export const Contact = ({
-  imageUrl,
-  title,
-  notReadMessagesAmount,
-  prevMessage,
-}: ContactType) => {
+interface ContactProps {
+  name: string;
+}
+
+export const Contact = ({ name }: ContactProps) => {
   return (
     <StyledContact>
-      <div className="image-container">
-        <img src={imageUrl} alt="" />
-      </div>
       <div className="contact__content">
-        <p className="title">{title}</p>
-        <p className="prev-message">{prevMessage.content}</p>
+        <p className="title">{name}</p>
       </div>
     </StyledContact>
   );

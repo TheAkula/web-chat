@@ -1,26 +1,33 @@
 import styled from "styled-components";
-import { baseTheme } from "../../../theme/baseTheme";
-import { Message as MessageType } from "../../../types";
+import { MessagesQuery } from "../../../generated/graphql";
 import { Message } from "./message";
 
 interface ChatMessagesProps {
-  messages: MessageType[];
+  messages: MessagesQuery["messages"] | undefined;
 }
 
 export const ChatMessages = ({ messages }: ChatMessagesProps) => {
   return (
     <StyledChatMessages>
-      {messages.map((m) => (
-        <Message key={m.id} {...m} />
-      ))}
+      {messages?.length &&
+        [...messages]
+          .reverse()
+          .map((m) => (
+            <Message
+              key={m.id}
+              {...m}
+              author={[m.author.firstName, m.author.lastName].join(" ")}
+            />
+          ))}
     </StyledChatMessages>
   );
 };
 
 const StyledChatMessages = styled.div`
-  overflow-y: auto;
+  overflow: auto;
   display: flex;
   padding: 20px;
-  flex-direction: column;
+  flex-direction: column-reverse;
+  height: 100%;
   align-self: flex-end;
 `;

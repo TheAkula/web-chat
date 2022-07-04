@@ -27,7 +27,7 @@ import { ChatsGroupsModule } from './chats-groups/chats-groups.module';
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
       playground: false,
       subscriptions: {
-        'graphql-ws': true,
+        'subscriptions-transport-ws': true,
       },
     }),
     UsersModule,
