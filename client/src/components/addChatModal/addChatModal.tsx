@@ -1,35 +1,40 @@
 import { FormEventHandler, useState } from "react";
 import styled from "styled-components";
+import { useAppContext } from "../../context/app-context";
 import { useModalContext } from "../../context/modal-context";
-import { useCreateChatsGroupMutation } from "../../generated/graphql";
+import { useCreateChatMutation } from "../../generated/graphql";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { ModalHeader } from "../ui/modal";
 import { Spinner } from "../ui/spinner";
 
-export const AddChatsGroupModal = () => {
+export const AddChatModal = () => {
   const { close } = useModalContext();
+  const { chosenChatsGroup } = useAppContext();
+  const [createChatMutation, { loading, error, data }] =
+    useCreateChatMutation();
   const [name, setName] = useState("");
-  const [createChatsGroupMutation, { loading, error, data }] =
-    useCreateChatsGroupMutation();
 
   const onSubmitedHandler: FormEventHandler = async (e) => {
     e.preventDefault();
-    await createChatsGroupMutation({
-      variables: {
-        name,
-      },
-    });
-    close();
+    if (chosenChatsGroup && name) {
+      await createChatMutation({
+        variables: {
+          chatsGroupId: chosenChatsGroup,
+          name,
+        },
+      });
+      close();
+    }
   };
 
   return (
     <form onSubmit={onSubmitedHandler}>
-      <ModalHeader title="Создать новую группу" />
+      <ModalHeader title="Создать новый чат" />
       <Input
         value={name}
         onChange={(e) => setName(e.target.value)}
-        placeholder="Название группы"
+        placeholder="Название чата"
       />
       <SubmitButton type="submit">
         {loading ? <Spinner /> : "Создать"}

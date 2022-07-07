@@ -6,9 +6,10 @@ export const Modal = () => {
   const { isShow, content, close } = useModalContext();
 
   return (
-    <Background show={isShow} onClick={close}>
+    <>
       <StyledModal show={isShow}>{content}</StyledModal>
-    </Background>
+      <Background show={isShow} onClick={close} />
+    </>
   );
 };
 
@@ -26,6 +27,7 @@ const Background = styled.div<ComponentWithShow>`
   left: 0;
   top: 0;
   opacity: ${({ show }) => (show ? "1" : "0")};
+  z-index: ${baseTheme.zIndexes.modalBg};
 `;
 
 const StyledModal = styled.div<ComponentWithShow>`
@@ -41,4 +43,5 @@ const StyledModal = styled.div<ComponentWithShow>`
   border-radius: 10px;
   top: 50%;
   transform: translate(-50%, -50%);
+  z-index: ${baseTheme.zIndexes.modal};
 `;

@@ -7,20 +7,21 @@ import {
   split,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import { ReactNode, useMemo } from "react";
+import { memo, ReactNode, useMemo } from "react";
 import { LocalStorageKeys } from "../constants";
 import { onError } from "@apollo/client/link/error";
 import { AuthActions, useAuthContext } from "./auth-context";
 import { WebSocketLink } from "@apollo/client/link/ws";
-import { SubscriptionClient } from "subscriptions-transport-ws";
 import { getMainDefinition } from "@apollo/client/utilities";
+import { createClient } from "graphql-ws";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 
 interface MyApolloProviderProps {
   children: ReactNode;
 }
 
-export const MyApolloProvider = ({ children }: MyApolloProviderProps) => {
-  const { authDispatch } = useAuthContext();
+export const MyApolloProvider = memo(({ children }: MyApolloProviderProps) => {
+  const { authDispatch, userToken } = useAuthContext();
 
   const httpLink = useMemo(
     () =>
@@ -30,15 +31,20 @@ export const MyApolloProvider = ({ children }: MyApolloProviderProps) => {
     []
   );
 
-  const wsLink = useMemo(
-    () =>
-      new WebSocketLink(
-        new SubscriptionClient("ws://localhost:4000/graphql", {
-          reconnect: true,
-        })
-      ),
-    []
-  );
+  const wsLink = useMemo(() => {
+    return new GraphQLWsLink(
+      createClient({
+        url: "ws://localhost:4000/graphql",
+        shouldRetry(errOrCloseEvent) {
+          return true;
+        },
+        connectionParams: {
+          isWebSocket: true,
+          authorization: "Bearer " + userToken,
+        },
+      })
+    );
+  }, [userToken]);
 
   const authLink = useMemo(
     () =>
@@ -91,4 +97,4 @@ export const MyApolloProvider = ({ children }: MyApolloProviderProps) => {
   );
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
-};
+});

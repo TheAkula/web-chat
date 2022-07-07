@@ -1,16 +1,10 @@
-import { gql } from "@apollo/client";
-import * as Apollo from "@apollo/client";
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K];
-};
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]?: Maybe<T[SubKey]>;
-};
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]: Maybe<T[SubKey]>;
-};
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -23,61 +17,61 @@ export type Scalars = {
 };
 
 export type Auth = {
-  __typename?: "Auth";
-  userToken: Scalars["String"];
+  __typename?: 'Auth';
+  userToken: Scalars['String'];
 };
 
 export type Chat = {
-  __typename?: "Chat";
+  __typename?: 'Chat';
   chatsGroup: ChatsGroup;
-  id: Scalars["String"];
+  id: Scalars['String'];
   messages: Array<MessageLink>;
-  name: Scalars["String"];
+  name: Scalars['String'];
   users: Array<UserLink>;
 };
 
 export type ChatLink = {
-  __typename?: "ChatLink";
-  id: Scalars["String"];
-  name: Scalars["String"];
+  __typename?: 'ChatLink';
+  id: Scalars['String'];
+  name: Scalars['String'];
 };
 
 export type ChatsGroup = {
-  __typename?: "ChatsGroup";
+  __typename?: 'ChatsGroup';
   chats: Array<ChatLink>;
-  id: Scalars["String"];
-  imgUrl?: Maybe<Scalars["String"]>;
-  name: Scalars["String"];
+  id: Scalars['String'];
+  imgUrl?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
   users: Array<UserLink>;
 };
 
 export type ChatsGroupLink = {
-  __typename?: "ChatsGroupLink";
-  id: Scalars["String"];
-  imgUrl?: Maybe<Scalars["String"]>;
-  name: Scalars["String"];
+  __typename?: 'ChatsGroupLink';
+  id: Scalars['String'];
+  imgUrl?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
 };
 
 export type Message = {
-  __typename?: "Message";
+  __typename?: 'Message';
   author: UserLink;
   chat: ChatLink;
-  content: Scalars["String"];
-  createdAt: Scalars["DateTime"];
-  id: Scalars["String"];
-  updatedAt: Scalars["DateTime"];
+  content: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  id: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type MessageLink = {
-  __typename?: "MessageLink";
-  content: Scalars["String"];
-  createdAt: Scalars["DateTime"];
-  id: Scalars["String"];
-  updatedAt: Scalars["DateTime"];
+  __typename?: 'MessageLink';
+  content: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  id: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type Mutation = {
-  __typename?: "Mutation";
+  __typename?: 'Mutation';
   createChat: Chat;
   createChatsGroup: ChatsGroup;
   createMessage: Message;
@@ -85,36 +79,40 @@ export type Mutation = {
   signUp: User;
 };
 
+
 export type MutationCreateChatArgs = {
-  chatsGroupId: Scalars["String"];
-  name: Scalars["String"];
-  userId: Scalars["String"];
+  chatsGroupId: Scalars['String'];
+  name: Scalars['String'];
 };
+
 
 export type MutationCreateChatsGroupArgs = {
-  imgUrl?: InputMaybe<Scalars["String"]>;
-  name: Scalars["String"];
+  imgUrl?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
 };
+
 
 export type MutationCreateMessageArgs = {
-  chatId: Scalars["String"];
-  content: Scalars["String"];
+  chatId: Scalars['String'];
+  content: Scalars['String'];
 };
+
 
 export type MutationLoginArgs = {
-  email: Scalars["String"];
-  password: Scalars["String"];
+  email: Scalars['String'];
+  password: Scalars['String'];
 };
 
+
 export type MutationSignUpArgs = {
-  email: Scalars["String"];
-  firstName: Scalars["String"];
-  lastName: Scalars["String"];
-  password: Scalars["String"];
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  password: Scalars['String'];
 };
 
 export type Query = {
-  __typename?: "Query";
+  __typename?: 'Query';
   chats: Array<Chat>;
   chatsGroups: ChatsGroup;
   messages: Array<Message>;
@@ -122,177 +120,166 @@ export type Query = {
   user: User;
 };
 
+
 export type QueryChatsArgs = {
-  id: Scalars["String"];
+  id: Scalars['String'];
 };
+
 
 export type QueryChatsGroupsArgs = {
-  id: Scalars["String"];
+  id: Scalars['String'];
 };
+
 
 export type QueryMessagesArgs = {
-  id: Scalars["String"];
+  id: Scalars['String'];
 };
 
+
 export type QueryUserArgs = {
-  id: Scalars["String"];
+  id: Scalars['String'];
 };
 
 export type Subscription = {
-  __typename?: "Subscription";
-  chatsGroupCreated: ChatsGroup;
-  messageCreated: Message;
+  __typename?: 'Subscription';
+  chatCreated: Chat;
+  chatsGroupCreated?: Maybe<ChatsGroup>;
+  messageCreated?: Maybe<Message>;
 };
 
 export type User = {
-  __typename?: "User";
+  __typename?: 'User';
   chats: Array<ChatLink>;
   chatsGroups: Array<ChatsGroupLink>;
-  email: Scalars["String"];
-  firstName: Scalars["String"];
-  id: Scalars["String"];
-  isActive: Scalars["Boolean"];
-  lastName: Scalars["String"];
-  userToken: Scalars["String"];
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  id: Scalars['String'];
+  isActive: Scalars['Boolean'];
+  lastName: Scalars['String'];
+  userToken: Scalars['String'];
 };
 
 export type UserLink = {
-  __typename?: "UserLink";
-  email: Scalars["String"];
-  firstName: Scalars["String"];
-  id: Scalars["String"];
-  isActive: Scalars["Boolean"];
-  lastName: Scalars["String"];
+  __typename?: 'UserLink';
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  id: Scalars['String'];
+  isActive: Scalars['Boolean'];
+  lastName: Scalars['String'];
 };
 
-export type ChatsGroupCreatedSubscriptionVariables = Exact<{
-  [key: string]: never;
+export type ChatCreatedSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ChatCreatedSubscription = { __typename?: 'Subscription', chatCreated: { __typename?: 'Chat', id: string, name: string } };
+
+export type ChatsGroupCreatedSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ChatsGroupCreatedSubscription = { __typename?: 'Subscription', chatsGroupCreated?: { __typename?: 'ChatsGroup', id: string, name: string, imgUrl?: string | null, users: Array<{ __typename?: 'UserLink', id: string, email: string }> } | null };
+
+export type CreateChatMutationVariables = Exact<{
+  name: Scalars['String'];
+  chatsGroupId: Scalars['String'];
 }>;
 
-export type ChatsGroupCreatedSubscription = {
-  __typename?: "Subscription";
-  chatsGroupCreated: {
-    __typename?: "ChatsGroup";
-    id: string;
-    name: string;
-    imgUrl?: string | null;
-    users: Array<{ __typename?: "UserLink"; id: string; email: string }>;
-  };
-};
+
+export type CreateChatMutation = { __typename?: 'Mutation', createChat: { __typename?: 'Chat', id: string, name: string } };
 
 export type CreateChatsGroupMutationVariables = Exact<{
-  name: Scalars["String"];
-  imgUrl?: InputMaybe<Scalars["String"]>;
+  name: Scalars['String'];
+  imgUrl?: InputMaybe<Scalars['String']>;
 }>;
 
-export type CreateChatsGroupMutation = {
-  __typename?: "Mutation";
-  createChatsGroup: { __typename?: "ChatsGroup"; id: string };
-};
+
+export type CreateChatsGroupMutation = { __typename?: 'Mutation', createChatsGroup: { __typename?: 'ChatsGroup', id: string } };
 
 export type LoginMutationVariables = Exact<{
-  email: Scalars["String"];
-  password: Scalars["String"];
+  email: Scalars['String'];
+  password: Scalars['String'];
 }>;
 
-export type LoginMutation = {
-  __typename?: "Mutation";
-  login: { __typename?: "Auth"; userToken: string };
-};
 
-export type MessageCreatedSubscriptionVariables = Exact<{
-  [key: string]: never;
-}>;
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'Auth', userToken: string } };
 
-export type MessageCreatedSubscription = {
-  __typename?: "Subscription";
-  messageCreated: {
-    __typename?: "Message";
-    id: string;
-    content: string;
-    updatedAt: any;
-    author: {
-      __typename?: "UserLink";
-      id: string;
-      firstName: string;
-      lastName: string;
-    };
-  };
-};
+export type MessageCreatedSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MessageCreatedSubscription = { __typename?: 'Subscription', messageCreated?: { __typename?: 'Message', id: string, content: string, updatedAt: any, author: { __typename?: 'UserLink', id: string, firstName: string, lastName: string } } | null };
 
 export type MessagesQueryVariables = Exact<{
-  id: Scalars["String"];
+  id: Scalars['String'];
 }>;
 
-export type MessagesQuery = {
-  __typename?: "Query";
-  messages: Array<{
-    __typename?: "Message";
-    id: string;
-    content: string;
-    updatedAt: any;
-    author: {
-      __typename?: "UserLink";
-      id: string;
-      firstName: string;
-      lastName: string;
-    };
-  }>;
-};
+
+export type MessagesQuery = { __typename?: 'Query', messages: Array<{ __typename?: 'Message', id: string, content: string, updatedAt: any, author: { __typename?: 'UserLink', id: string, firstName: string, lastName: string } }> };
 
 export type MyChatsQueryVariables = Exact<{
-  id: Scalars["String"];
+  id: Scalars['String'];
 }>;
 
-export type MyChatsQuery = {
-  __typename?: "Query";
-  chats: Array<{ __typename?: "Chat"; id: string; name: string }>;
-};
 
-export type MyChatsGroupsQueryVariables = Exact<{ [key: string]: never }>;
+export type MyChatsQuery = { __typename?: 'Query', chats: Array<{ __typename?: 'Chat', id: string, name: string }> };
 
-export type MyChatsGroupsQuery = {
-  __typename?: "Query";
-  myChatsGroups: Array<{
-    __typename?: "ChatsGroup";
-    id: string;
-    name: string;
-    imgUrl?: string | null;
-  }>;
-};
+export type MyChatsGroupsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyChatsGroupsQuery = { __typename?: 'Query', myChatsGroups: Array<{ __typename?: 'ChatsGroup', id: string, name: string, imgUrl?: string | null }> };
 
 export type SignUpMutationVariables = Exact<{
-  firstName: Scalars["String"];
-  lastName: Scalars["String"];
-  password: Scalars["String"];
-  email: Scalars["String"];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  password: Scalars['String'];
+  email: Scalars['String'];
 }>;
 
-export type SignUpMutation = {
-  __typename?: "Mutation";
-  signUp: {
-    __typename?: "User";
-    id: string;
-    firstName: string;
-    lastName: string;
-    userToken: string;
-    email: string;
-  };
-};
 
-export const ChatsGroupCreatedDocument = gql`
-  subscription chatsGroupCreated {
-    chatsGroupCreated {
-      id
-      name
-      imgUrl
-      users {
-        id
-        email
+export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'User', id: string, firstName: string, lastName: string, userToken: string, email: string } };
+
+
+export const ChatCreatedDocument = gql`
+    subscription chatCreated {
+  chatCreated {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useChatCreatedSubscription__
+ *
+ * To run a query within a React component, call `useChatCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useChatCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChatCreatedSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useChatCreatedSubscription(baseOptions?: Apollo.SubscriptionHookOptions<ChatCreatedSubscription, ChatCreatedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<ChatCreatedSubscription, ChatCreatedSubscriptionVariables>(ChatCreatedDocument, options);
       }
+export type ChatCreatedSubscriptionHookResult = ReturnType<typeof useChatCreatedSubscription>;
+export type ChatCreatedSubscriptionResult = Apollo.SubscriptionResult<ChatCreatedSubscription>;
+export const ChatsGroupCreatedDocument = gql`
+    subscription chatsGroupCreated {
+  chatsGroupCreated {
+    id
+    name
+    imgUrl
+    users {
+      id
+      email
     }
   }
-`;
+}
+    `;
 
 /**
  * __useChatsGroupCreatedSubscription__
@@ -309,34 +296,55 @@ export const ChatsGroupCreatedDocument = gql`
  *   },
  * });
  */
-export function useChatsGroupCreatedSubscription(
-  baseOptions?: Apollo.SubscriptionHookOptions<
-    ChatsGroupCreatedSubscription,
-    ChatsGroupCreatedSubscriptionVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    ChatsGroupCreatedSubscription,
-    ChatsGroupCreatedSubscriptionVariables
-  >(ChatsGroupCreatedDocument, options);
-}
-export type ChatsGroupCreatedSubscriptionHookResult = ReturnType<
-  typeof useChatsGroupCreatedSubscription
->;
-export type ChatsGroupCreatedSubscriptionResult =
-  Apollo.SubscriptionResult<ChatsGroupCreatedSubscription>;
-export const CreateChatsGroupDocument = gql`
-  mutation CreateChatsGroup($name: String!, $imgUrl: String) {
-    createChatsGroup(name: $name, imgUrl: $imgUrl) {
-      id
-    }
+export function useChatsGroupCreatedSubscription(baseOptions?: Apollo.SubscriptionHookOptions<ChatsGroupCreatedSubscription, ChatsGroupCreatedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<ChatsGroupCreatedSubscription, ChatsGroupCreatedSubscriptionVariables>(ChatsGroupCreatedDocument, options);
+      }
+export type ChatsGroupCreatedSubscriptionHookResult = ReturnType<typeof useChatsGroupCreatedSubscription>;
+export type ChatsGroupCreatedSubscriptionResult = Apollo.SubscriptionResult<ChatsGroupCreatedSubscription>;
+export const CreateChatDocument = gql`
+    mutation createChat($name: String!, $chatsGroupId: String!) {
+  createChat(name: $name, chatsGroupId: $chatsGroupId) {
+    id
+    name
   }
-`;
-export type CreateChatsGroupMutationFn = Apollo.MutationFunction<
-  CreateChatsGroupMutation,
-  CreateChatsGroupMutationVariables
->;
+}
+    `;
+export type CreateChatMutationFn = Apollo.MutationFunction<CreateChatMutation, CreateChatMutationVariables>;
+
+/**
+ * __useCreateChatMutation__
+ *
+ * To run a mutation, you first call `useCreateChatMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateChatMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createChatMutation, { data, loading, error }] = useCreateChatMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      chatsGroupId: // value for 'chatsGroupId'
+ *   },
+ * });
+ */
+export function useCreateChatMutation(baseOptions?: Apollo.MutationHookOptions<CreateChatMutation, CreateChatMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateChatMutation, CreateChatMutationVariables>(CreateChatDocument, options);
+      }
+export type CreateChatMutationHookResult = ReturnType<typeof useCreateChatMutation>;
+export type CreateChatMutationResult = Apollo.MutationResult<CreateChatMutation>;
+export type CreateChatMutationOptions = Apollo.BaseMutationOptions<CreateChatMutation, CreateChatMutationVariables>;
+export const CreateChatsGroupDocument = gql`
+    mutation CreateChatsGroup($name: String!, $imgUrl: String) {
+  createChatsGroup(name: $name, imgUrl: $imgUrl) {
+    id
+  }
+}
+    `;
+export type CreateChatsGroupMutationFn = Apollo.MutationFunction<CreateChatsGroupMutation, CreateChatsGroupMutationVariables>;
 
 /**
  * __useCreateChatsGroupMutation__
@@ -356,38 +364,21 @@ export type CreateChatsGroupMutationFn = Apollo.MutationFunction<
  *   },
  * });
  */
-export function useCreateChatsGroupMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    CreateChatsGroupMutation,
-    CreateChatsGroupMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    CreateChatsGroupMutation,
-    CreateChatsGroupMutationVariables
-  >(CreateChatsGroupDocument, options);
-}
-export type CreateChatsGroupMutationHookResult = ReturnType<
-  typeof useCreateChatsGroupMutation
->;
-export type CreateChatsGroupMutationResult =
-  Apollo.MutationResult<CreateChatsGroupMutation>;
-export type CreateChatsGroupMutationOptions = Apollo.BaseMutationOptions<
-  CreateChatsGroupMutation,
-  CreateChatsGroupMutationVariables
->;
+export function useCreateChatsGroupMutation(baseOptions?: Apollo.MutationHookOptions<CreateChatsGroupMutation, CreateChatsGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateChatsGroupMutation, CreateChatsGroupMutationVariables>(CreateChatsGroupDocument, options);
+      }
+export type CreateChatsGroupMutationHookResult = ReturnType<typeof useCreateChatsGroupMutation>;
+export type CreateChatsGroupMutationResult = Apollo.MutationResult<CreateChatsGroupMutation>;
+export type CreateChatsGroupMutationOptions = Apollo.BaseMutationOptions<CreateChatsGroupMutation, CreateChatsGroupMutationVariables>;
 export const LoginDocument = gql`
-  mutation login($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
-      userToken
-    }
+    mutation login($email: String!, $password: String!) {
+  login(email: $email, password: $password) {
+    userToken
   }
-`;
-export type LoginMutationFn = Apollo.MutationFunction<
-  LoginMutation,
-  LoginMutationVariables
->;
+}
+    `;
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
 
 /**
  * __useLoginMutation__
@@ -407,38 +398,27 @@ export type LoginMutationFn = Apollo.MutationFunction<
  *   },
  * });
  */
-export function useLoginMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    LoginMutation,
-    LoginMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<LoginMutation, LoginMutationVariables>(
-    LoginDocument,
-    options
-  );
-}
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+      }
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
-export type LoginMutationOptions = Apollo.BaseMutationOptions<
-  LoginMutation,
-  LoginMutationVariables
->;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const MessageCreatedDocument = gql`
-  subscription messageCreated {
-    messageCreated {
+    subscription messageCreated {
+  messageCreated {
+    id
+    author {
       id
-      author {
-        id
-        firstName
-        lastName
-      }
-      content
-      updatedAt
+      firstName
+      lastName
     }
+    content
+    updatedAt
   }
-`;
+}
+    `;
 
 /**
  * __useMessageCreatedSubscription__
@@ -455,37 +435,26 @@ export const MessageCreatedDocument = gql`
  *   },
  * });
  */
-export function useMessageCreatedSubscription(
-  baseOptions?: Apollo.SubscriptionHookOptions<
-    MessageCreatedSubscription,
-    MessageCreatedSubscriptionVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    MessageCreatedSubscription,
-    MessageCreatedSubscriptionVariables
-  >(MessageCreatedDocument, options);
-}
-export type MessageCreatedSubscriptionHookResult = ReturnType<
-  typeof useMessageCreatedSubscription
->;
-export type MessageCreatedSubscriptionResult =
-  Apollo.SubscriptionResult<MessageCreatedSubscription>;
-export const MessagesDocument = gql`
-  query messages($id: String!) {
-    messages(id: $id) {
-      id
-      author {
-        id
-        firstName
-        lastName
+export function useMessageCreatedSubscription(baseOptions?: Apollo.SubscriptionHookOptions<MessageCreatedSubscription, MessageCreatedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<MessageCreatedSubscription, MessageCreatedSubscriptionVariables>(MessageCreatedDocument, options);
       }
-      content
-      updatedAt
+export type MessageCreatedSubscriptionHookResult = ReturnType<typeof useMessageCreatedSubscription>;
+export type MessageCreatedSubscriptionResult = Apollo.SubscriptionResult<MessageCreatedSubscription>;
+export const MessagesDocument = gql`
+    query messages($id: String!) {
+  messages(id: $id) {
+    id
+    author {
+      id
+      firstName
+      lastName
     }
+    content
+    updatedAt
   }
-`;
+}
+    `;
 
 /**
  * __useMessagesQuery__
@@ -503,43 +472,25 @@ export const MessagesDocument = gql`
  *   },
  * });
  */
-export function useMessagesQuery(
-  baseOptions: Apollo.QueryHookOptions<MessagesQuery, MessagesQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<MessagesQuery, MessagesQueryVariables>(
-    MessagesDocument,
-    options
-  );
-}
-export function useMessagesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    MessagesQuery,
-    MessagesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<MessagesQuery, MessagesQueryVariables>(
-    MessagesDocument,
-    options
-  );
-}
+export function useMessagesQuery(baseOptions: Apollo.QueryHookOptions<MessagesQuery, MessagesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MessagesQuery, MessagesQueryVariables>(MessagesDocument, options);
+      }
+export function useMessagesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MessagesQuery, MessagesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MessagesQuery, MessagesQueryVariables>(MessagesDocument, options);
+        }
 export type MessagesQueryHookResult = ReturnType<typeof useMessagesQuery>;
-export type MessagesLazyQueryHookResult = ReturnType<
-  typeof useMessagesLazyQuery
->;
-export type MessagesQueryResult = Apollo.QueryResult<
-  MessagesQuery,
-  MessagesQueryVariables
->;
+export type MessagesLazyQueryHookResult = ReturnType<typeof useMessagesLazyQuery>;
+export type MessagesQueryResult = Apollo.QueryResult<MessagesQuery, MessagesQueryVariables>;
 export const MyChatsDocument = gql`
-  query myChats($id: String!) {
-    chats(id: $id) {
-      id
-      name
-    }
+    query myChats($id: String!) {
+  chats(id: $id) {
+    id
+    name
   }
-`;
+}
+    `;
 
 /**
  * __useMyChatsQuery__
@@ -557,39 +508,26 @@ export const MyChatsDocument = gql`
  *   },
  * });
  */
-export function useMyChatsQuery(
-  baseOptions: Apollo.QueryHookOptions<MyChatsQuery, MyChatsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<MyChatsQuery, MyChatsQueryVariables>(
-    MyChatsDocument,
-    options
-  );
-}
-export function useMyChatsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<MyChatsQuery, MyChatsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<MyChatsQuery, MyChatsQueryVariables>(
-    MyChatsDocument,
-    options
-  );
-}
+export function useMyChatsQuery(baseOptions: Apollo.QueryHookOptions<MyChatsQuery, MyChatsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MyChatsQuery, MyChatsQueryVariables>(MyChatsDocument, options);
+      }
+export function useMyChatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyChatsQuery, MyChatsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MyChatsQuery, MyChatsQueryVariables>(MyChatsDocument, options);
+        }
 export type MyChatsQueryHookResult = ReturnType<typeof useMyChatsQuery>;
 export type MyChatsLazyQueryHookResult = ReturnType<typeof useMyChatsLazyQuery>;
-export type MyChatsQueryResult = Apollo.QueryResult<
-  MyChatsQuery,
-  MyChatsQueryVariables
->;
+export type MyChatsQueryResult = Apollo.QueryResult<MyChatsQuery, MyChatsQueryVariables>;
 export const MyChatsGroupsDocument = gql`
-  query myChatsGroups {
-    myChatsGroups {
-      id
-      name
-      imgUrl
-    }
+    query myChatsGroups {
+  myChatsGroups {
+    id
+    name
+    imgUrl
   }
-`;
+}
+    `;
 
 /**
  * __useMyChatsGroupsQuery__
@@ -606,65 +544,34 @@ export const MyChatsGroupsDocument = gql`
  *   },
  * });
  */
-export function useMyChatsGroupsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    MyChatsGroupsQuery,
-    MyChatsGroupsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<MyChatsGroupsQuery, MyChatsGroupsQueryVariables>(
-    MyChatsGroupsDocument,
-    options
-  );
-}
-export function useMyChatsGroupsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    MyChatsGroupsQuery,
-    MyChatsGroupsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<MyChatsGroupsQuery, MyChatsGroupsQueryVariables>(
-    MyChatsGroupsDocument,
-    options
-  );
-}
-export type MyChatsGroupsQueryHookResult = ReturnType<
-  typeof useMyChatsGroupsQuery
->;
-export type MyChatsGroupsLazyQueryHookResult = ReturnType<
-  typeof useMyChatsGroupsLazyQuery
->;
-export type MyChatsGroupsQueryResult = Apollo.QueryResult<
-  MyChatsGroupsQuery,
-  MyChatsGroupsQueryVariables
->;
+export function useMyChatsGroupsQuery(baseOptions?: Apollo.QueryHookOptions<MyChatsGroupsQuery, MyChatsGroupsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MyChatsGroupsQuery, MyChatsGroupsQueryVariables>(MyChatsGroupsDocument, options);
+      }
+export function useMyChatsGroupsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyChatsGroupsQuery, MyChatsGroupsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MyChatsGroupsQuery, MyChatsGroupsQueryVariables>(MyChatsGroupsDocument, options);
+        }
+export type MyChatsGroupsQueryHookResult = ReturnType<typeof useMyChatsGroupsQuery>;
+export type MyChatsGroupsLazyQueryHookResult = ReturnType<typeof useMyChatsGroupsLazyQuery>;
+export type MyChatsGroupsQueryResult = Apollo.QueryResult<MyChatsGroupsQuery, MyChatsGroupsQueryVariables>;
 export const SignUpDocument = gql`
-  mutation signUp(
-    $firstName: String!
-    $lastName: String!
-    $password: String!
-    $email: String!
+    mutation signUp($firstName: String!, $lastName: String!, $password: String!, $email: String!) {
+  signUp(
+    firstName: $firstName
+    lastName: $lastName
+    password: $password
+    email: $email
   ) {
-    signUp(
-      firstName: $firstName
-      lastName: $lastName
-      password: $password
-      email: $email
-    ) {
-      id
-      firstName
-      lastName
-      userToken
-      email
-    }
+    id
+    firstName
+    lastName
+    userToken
+    email
   }
-`;
-export type SignUpMutationFn = Apollo.MutationFunction<
-  SignUpMutation,
-  SignUpMutationVariables
->;
+}
+    `;
+export type SignUpMutationFn = Apollo.MutationFunction<SignUpMutation, SignUpMutationVariables>;
 
 /**
  * __useSignUpMutation__
@@ -686,21 +593,10 @@ export type SignUpMutationFn = Apollo.MutationFunction<
  *   },
  * });
  */
-export function useSignUpMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SignUpMutation,
-    SignUpMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SignUpMutation, SignUpMutationVariables>(
-    SignUpDocument,
-    options
-  );
-}
+export function useSignUpMutation(baseOptions?: Apollo.MutationHookOptions<SignUpMutation, SignUpMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SignUpMutation, SignUpMutationVariables>(SignUpDocument, options);
+      }
 export type SignUpMutationHookResult = ReturnType<typeof useSignUpMutation>;
 export type SignUpMutationResult = Apollo.MutationResult<SignUpMutation>;
-export type SignUpMutationOptions = Apollo.BaseMutationOptions<
-  SignUpMutation,
-  SignUpMutationVariables
->;
+export type SignUpMutationOptions = Apollo.BaseMutationOptions<SignUpMutation, SignUpMutationVariables>;

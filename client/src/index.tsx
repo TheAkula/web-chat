@@ -12,18 +12,16 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <AuthContextProvider>
-      <MyApolloProvider>
-        <AppContextProvider>
-          <ModalContextProvider>
-            <Router>
-              <App />
-              <GlobalStyles />
-            </Router>
-          </ModalContextProvider>
-        </AppContextProvider>
-      </MyApolloProvider>
-    </AuthContextProvider>
-  </React.StrictMode>
+  <AuthContextProvider>
+    <MyApolloProvider>
+      <AppContextProvider>
+        <ModalContextProvider>
+          <Router>
+            <App />
+            <GlobalStyles />
+          </Router>
+        </ModalContextProvider>
+      </AppContextProvider>
+    </MyApolloProvider>
+  </AuthContextProvider>
 );

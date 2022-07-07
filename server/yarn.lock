@@ -3114,6 +3114,11 @@
   dependencies:
     "tslib" "^2.1.0"
 
+"graphql-ws@^5.9.1":
+  "integrity" "sha512-mL/SWGBwIT9Meq0NlfS55yXXTOeWPMbK7bZBEZhFu46bcGk1coTx2Sdtzxdk+9yHWngD+Fk1PZDWaAutQa9tpw=="
+  "resolved" "https://registry.npmjs.org/graphql-ws/-/graphql-ws-5.9.1.tgz"
+  "version" "5.9.1"
+
 "graphql-ws@5.5.5":
   "integrity" "sha512-hvyIS71vs4Tu/yUYHPvGXsTgo0t3arU820+lT5VjZS2go0ewp2LqyCgxEN56CzOG7Iys52eRhHBiD1gGRdiQtw=="
   "resolved" "https://registry.npmjs.org/graphql-ws/-/graphql-ws-5.5.5.tgz"
@@ -5194,7 +5199,7 @@
   "resolved" "https://registry.npmjs.org/strip-json-comments/-/strip-json-comments-3.1.1.tgz"
   "version" "3.1.1"
 
-"subscriptions-transport-ws@^0.11.0", "subscriptions-transport-ws@0.11.0":
+"subscriptions-transport-ws@0.11.0":
   "integrity" "sha512-8D4C6DIH5tGiAIpp5I0wD/xRlNiZAPGHygzCe7VzyzUoxHtawzjNAY9SUTXU05/EY2NMY9/9GF0ycizkXr1CWQ=="
   "resolved" "https://registry.npmjs.org/subscriptions-transport-ws/-/subscriptions-transport-ws-0.11.0.tgz"
   "version" "0.11.0"

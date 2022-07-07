@@ -1,0 +1,6 @@
+subscription chatCreated {
+  chatCreated {
+    id
+    name
+  }
+}

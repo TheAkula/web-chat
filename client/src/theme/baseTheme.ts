@@ -12,4 +12,8 @@ export const baseTheme = {
     },
     white: "#fff",
   },
+  zIndexes: {
+    modalBg: 100,
+    modal: 200,
+  },
 };

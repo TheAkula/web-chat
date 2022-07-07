@@ -1,28 +1,37 @@
 import styled from "styled-components";
-import { baseTheme } from "../../../../theme/baseTheme";
+import { baseTheme } from "../../../theme/baseTheme";
 
-interface ContactProps {
+interface ChatProps {
+  id: string;
   name: string;
+  clicked: (id: string) => void;
+  isActive: boolean;
 }
 
-export const Contact = ({ name }: ContactProps) => {
+export const Chat = ({ name, clicked, id, isActive }: ChatProps) => {
   return (
-    <StyledContact>
+    <StyledChat isActive={isActive} onClick={() => clicked(id)}>
       <div className="contact__content">
         <p className="title">{name}</p>
       </div>
-    </StyledContact>
+    </StyledChat>
   );
 };
 
-const StyledContact = styled.div`
+interface StyledChatProps {
+  isActive: boolean;
+}
+
+const StyledChat = styled.div<StyledChatProps>`
   height: 70px;
   display: flex;
   padding: 0 20px;
   align-items: center;
+  background-color: ${({ isActive }) =>
+    isActive ? baseTheme.colors.bg2 : "transparent"};
   gap: 20px;
   cursor: pointer;
-  border-bottom: 1px solid ${baseTheme.colors.line};
+  border-bottom: 1px solid ${baseTheme.colors.bg2};
 
   .image-container {
     border-radius: 50%;

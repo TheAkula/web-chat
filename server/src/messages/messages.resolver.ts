@@ -32,6 +32,10 @@ export class MessagesResolver {
 
   @Subscription(() => Message, {
     nullable: true,
+    filter(payload, variables) {
+      console.log(payload, variables);
+      return true;
+    },
   })
   messageCreated() {
     return this.pubSub.asyncIterator('MESSAGE_CREATED');

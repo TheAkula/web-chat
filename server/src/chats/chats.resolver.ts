@@ -6,22 +6,24 @@ import {
   ResolveField,
   Resolver,
   Query,
+  Subscription,
 } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/current-user.decorator';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
-import { ChatsGroupsService } from 'src/chats-groups/chats-groups.service';
 import { MessageLink } from 'src/messages/message-link.model';
+import { PubSubProvider } from 'src/pub-sub';
 import { UserLink } from 'src/users/user-link.model';
 import { User } from 'src/users/user.model';
 import { Chat } from './chat.model';
 import { ChatsService } from './chats.service';
 import { CreateChatArgs } from './dto/create-chat.args';
 
+@UseGuards(GqlAuthGuard)
 @Resolver(() => Chat)
 export class ChatsResolver {
   constructor(
     private chatsService: ChatsService,
-    private chatsGroupsService: ChatsGroupsService,
+    private pubSub: PubSubProvider,
   ) {}
 
   @Query(() => [Chat], { name: 'chats' })
@@ -29,13 +31,19 @@ export class ChatsResolver {
     return this.chatsService.getChats(id);
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => Chat)
-  createChat(
+  async createChat(
     @Args() args: CreateChatArgs,
     @CurrentUser() user: User,
   ): Promise<Chat> {
-    return this.chatsService.createChat({ ...args, user });
+    const newChat = await this.chatsService.createChat({ ...args, user });
+    this.pubSub.publish('CHAT_CREATED', { chatCreated: newChat });
+    return newChat;
+  }
+
+  @Subscription(() => Chat)
+  chatCreated() {
+    return this.pubSub.asyncIterator('CHAT_CREATED');
   }
 
   @ResolveField('users', () => [UserLink])

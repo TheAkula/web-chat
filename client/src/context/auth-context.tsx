@@ -1,4 +1,4 @@
-import React, { Reducer, useContext, useReducer } from "react";
+import React, { memo, Reducer, useContext, useMemo, useReducer } from "react";
 import { LocalStorageKeys } from "../constants";
 import { AuthContextType } from "../types";
 
@@ -55,14 +55,19 @@ interface AuthContextProviderProps {
   children: React.ReactNode;
 }
 
-export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-  const [authState, authDispatch] = useReducer(reducer, initialState);
+export const AuthContextProvider = memo(
+  ({ children }: AuthContextProviderProps) => {
+    const [authState, authDispatch] = useReducer(reducer, initialState);
 
-  return (
-    <AuthContext.Provider value={{ ...authState, authDispatch }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+    const value: AuthContextValue = useMemo(
+      () => ({ ...authState, authDispatch }),
+      [authState]
+    );
+
+    return (
+      <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+    );
+  }
+);
 
 export const useAuthContext = () => useContext(AuthContext);
