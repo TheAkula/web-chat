@@ -33,7 +33,9 @@ export class MessagesResolver {
   @Subscription(() => Message, {
     nullable: true,
     filter(payload, variables, context) {
-      return payload.messageCreated.users.includes(variables.userId);
+      return payload.messageCreated.users
+        .map((user) => user.id)
+        .includes(variables.userId);
     },
     resolve(payload, args, context, info) {
       return payload.messageCreated.message;

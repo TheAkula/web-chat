@@ -253,6 +253,14 @@ export type MyUserInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MyUserInfoQuery = { __typename?: 'Query', myUserInfo: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string } };
 
+export type SendMessageMutationVariables = Exact<{
+  content: Scalars['String'];
+  chatId: Scalars['String'];
+}>;
+
+
+export type SendMessageMutation = { __typename?: 'Mutation', createMessage: { __typename?: 'Message', id: string } };
+
 export type SignUpMutationVariables = Exact<{
   firstName: Scalars['String'];
   lastName: Scalars['String'];
@@ -622,6 +630,40 @@ export function useMyUserInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type MyUserInfoQueryHookResult = ReturnType<typeof useMyUserInfoQuery>;
 export type MyUserInfoLazyQueryHookResult = ReturnType<typeof useMyUserInfoLazyQuery>;
 export type MyUserInfoQueryResult = Apollo.QueryResult<MyUserInfoQuery, MyUserInfoQueryVariables>;
+export const SendMessageDocument = gql`
+    mutation sendMessage($content: String!, $chatId: String!) {
+  createMessage(content: $content, chatId: $chatId) {
+    id
+  }
+}
+    `;
+export type SendMessageMutationFn = Apollo.MutationFunction<SendMessageMutation, SendMessageMutationVariables>;
+
+/**
+ * __useSendMessageMutation__
+ *
+ * To run a mutation, you first call `useSendMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendMessageMutation, { data, loading, error }] = useSendMessageMutation({
+ *   variables: {
+ *      content: // value for 'content'
+ *      chatId: // value for 'chatId'
+ *   },
+ * });
+ */
+export function useSendMessageMutation(baseOptions?: Apollo.MutationHookOptions<SendMessageMutation, SendMessageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SendMessageMutation, SendMessageMutationVariables>(SendMessageDocument, options);
+      }
+export type SendMessageMutationHookResult = ReturnType<typeof useSendMessageMutation>;
+export type SendMessageMutationResult = Apollo.MutationResult<SendMessageMutation>;
+export type SendMessageMutationOptions = Apollo.BaseMutationOptions<SendMessageMutation, SendMessageMutationVariables>;
 export const SignUpDocument = gql`
     mutation signUp($firstName: String!, $lastName: String!, $password: String!, $email: String!) {
   signUp(

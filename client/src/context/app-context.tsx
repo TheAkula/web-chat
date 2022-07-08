@@ -178,6 +178,7 @@ export const AppContextProvider = memo(({ children }: Props) => {
           },
           updateQuery: (prev, { subscriptionData }) => {
             if (subscriptionData.data && subscriptionData.data.messageCreated) {
+              console.log(subscriptionData.data.messageCreated);
               const newMessages = prev.messages
                 ? prev.messages.concat(subscriptionData.data.messageCreated)
                 : [subscriptionData.data.messageCreated];
