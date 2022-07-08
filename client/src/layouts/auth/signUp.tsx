@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { AuthActions, useAuthContext } from "../../context/auth-context";
+import { useAuthContext } from "../../context/auth-context";
 import { useSignUpMutation } from "../../generated/graphql";
 import {
   AuthCard,
@@ -16,7 +16,7 @@ export const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [signUpMutation, { loading, error, data }] = useSignUpMutation();
-  const { authDispatch } = useAuthContext();
+  const { changeUserToken } = useAuthContext();
   const navigate = useNavigate();
 
   const onClickedHandler = () => {
@@ -29,7 +29,7 @@ export const SignUp = () => {
       },
       onCompleted: (complData) => {
         const { __typename, ...payload } = complData.signUp;
-        authDispatch({ type: AuthActions.SIGNUP, payload });
+        changeUserToken(payload.userToken || "");
         navigate("/");
       },
     });

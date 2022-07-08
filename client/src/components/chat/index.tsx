@@ -5,11 +5,14 @@ import { ChatInput } from "./chatInput";
 import { ChatMessages } from "./chatMessages";
 
 export const Chat = () => {
-  const { messages } = useAppContext();
+  const { messages, chosenChat } = useAppContext();
 
   return (
     <StyledChat>
-      <ChatMessages messages={messages.items} />
+      <ChatMessages
+        messages={chosenChat ? messages.items : []}
+        loading={messages.loading}
+      />
       <ChatInput />
     </StyledChat>
   );

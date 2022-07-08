@@ -1,5 +1,5 @@
-subscription chatsGroupCreated {
-  chatsGroupCreated {
+subscription chatsGroupCreated($userId: String!) {
+  chatsGroupCreated(userId: $userId) {
     id
     name
     imgUrl

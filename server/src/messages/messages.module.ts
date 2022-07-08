@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Message } from './message.entity';
+import { Message } from './message.model';
 import { MessagesService } from './messages.service';
 import { MessagesResolver } from './messages.resolver';
 import { ChatsModule } from 'src/chats/chats.module';

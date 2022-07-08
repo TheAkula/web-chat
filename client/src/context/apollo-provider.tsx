@@ -1,27 +1,25 @@
 import {
   ApolloClient,
-  ApolloLink,
   ApolloProvider,
   createHttpLink,
   InMemoryCache,
   split,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import { memo, ReactNode, useMemo } from "react";
+import { memo, ReactNode, useMemo, useState } from "react";
 import { LocalStorageKeys } from "../constants";
 import { onError } from "@apollo/client/link/error";
-import { AuthActions, useAuthContext } from "./auth-context";
-import { WebSocketLink } from "@apollo/client/link/ws";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { createClient } from "graphql-ws";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { useAuthContext } from "./auth-context";
 
 interface MyApolloProviderProps {
   children: ReactNode;
 }
 
 export const MyApolloProvider = memo(({ children }: MyApolloProviderProps) => {
-  const { authDispatch, userToken } = useAuthContext();
+  const { userToken } = useAuthContext();
 
   const httpLink = useMemo(
     () =>
@@ -68,7 +66,7 @@ export const MyApolloProvider = memo(({ children }: MyApolloProviderProps) => {
           // authDispatch({ type: AuthActions.LOGOUT });
         }
       }),
-    [authDispatch]
+    []
   );
 
   const link = useMemo(

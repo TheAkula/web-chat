@@ -5,9 +5,11 @@ import { AddChatGroup } from "./addChatGroup";
 import { ChatsGroup } from "./chatsGroup";
 
 export const ChatGroupSideBar = () => {
-  const { chatsGroups } = useAppContext();
+  const { chatsGroups, chooseChatsGroup, chosenChatsGroup } = useAppContext();
 
-  const onClickedHandler = () => {};
+  const onClickedHandler = (id: string) => {
+    chooseChatsGroup(id);
+  };
 
   return (
     <StyledSideBar>
@@ -15,6 +17,7 @@ export const ChatGroupSideBar = () => {
         chatsGroups.items.map((chatsGroup) => (
           <ChatsGroup
             key={chatsGroup.id}
+            isActive={chosenChatsGroup === chatsGroup.id}
             {...chatsGroup}
             clicked={onClickedHandler}
           />
@@ -26,5 +29,6 @@ export const ChatGroupSideBar = () => {
 
 const StyledSideBar = styled.div`
   background-color: ${baseTheme.colors.bg2};
-  padding: 10px;
+  padding: 10px 0;
+  overflow: auto;
 `;

@@ -1,0 +1,8 @@
+query myUserInfo {
+  myUserInfo {
+    id
+    firstName
+    lastName
+    email
+  }
+}

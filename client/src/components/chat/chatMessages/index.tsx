@@ -4,12 +4,14 @@ import { Message } from "./message";
 
 interface ChatMessagesProps {
   messages: MessagesQuery["messages"] | undefined;
+  loading: boolean;
 }
 
-export const ChatMessages = ({ messages }: ChatMessagesProps) => {
+export const ChatMessages = ({ messages, loading }: ChatMessagesProps) => {
   return (
     <StyledChatMessages>
-      {messages?.length &&
+      {!loading &&
+        !!messages?.length &&
         [...messages]
           .reverse()
           .map((m) => (

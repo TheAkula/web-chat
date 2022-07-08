@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { User } from 'src/users/user.entity';
+import { User } from 'src/users/user.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ChatLink } from 'src/chats/chat-link.model';
 import { ChatsGroupLink } from 'src/chats-groups/chat-group-link.model';
+import { Chat } from 'src/chats/chat.model';
 
 @Injectable()
 export class UsersService {
@@ -46,5 +47,44 @@ export class UsersService {
       throw new NotFoundException(`User with id "${id} not found"`);
     }
     return user.chatsGroups;
+  }
+
+  async getUsersForMessage(id: string) {
+    return this.userRepository
+      .createQueryBuilder('user')
+      .select('user.id')
+      .innerJoin('user.chats', 'chat', 'chat.id = :friendsChatId', {
+        friendsChatId: id,
+      })
+      .getMany();
+  }
+
+  async isSendToUser(user: User, chat: Chat) {
+    return !!(await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id = :userId', { userId: user.id })
+      .innerJoin('user.chats', 'chat', 'chat.id = :friendsChatId', {
+        friendsChatId: chat.id,
+      })
+      .innerJoin(
+        'user.chatsGroups',
+        'chatsGroup',
+        'chatsGroup.chats like :chatId',
+        { chatId: `%${chat.id}%` },
+      )
+      .getCount());
+  }
+
+  async getUsersForChat(id: string) {
+    return this.userRepository
+      .createQueryBuilder('user')
+      .select('user.id')
+      .innerJoin(
+        'user.chatsGroups',
+        'chatsGroup',
+        'chatsGroup.id = :chatsGroupId',
+        { chatsGroupId: id },
+      )
+      .getMany();
   }
 }

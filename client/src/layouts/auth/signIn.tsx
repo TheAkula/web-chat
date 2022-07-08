@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { AuthActions, useAuthContext } from "../../context/auth-context";
+import { useAuthContext } from "../../context/auth-context";
 import { useLoginMutation } from "../../generated/graphql";
 import {
   AuthCard,
@@ -15,7 +15,7 @@ export const SignIn = () => {
   const [loginMutaion, { data, error, loading }] = useLoginMutation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { authDispatch } = useAuthContext();
+  const { changeUserToken } = useAuthContext();
   const navigate = useNavigate();
 
   const onClickedHandler = () => {
@@ -26,7 +26,7 @@ export const SignIn = () => {
       },
       onCompleted: (complData) => {
         const { __typename, ...payload } = complData.login;
-        authDispatch({ type: AuthActions.LOGIN, payload });
+        changeUserToken(complData.login.userToken);
         window.localStorage.setItem(
           LocalStorageKeys.USER_TOKEN_KEY,
           complData.login.userToken

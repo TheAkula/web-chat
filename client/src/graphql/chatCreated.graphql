@@ -1,5 +1,5 @@
-subscription chatCreated {
-  chatCreated {
+subscription chatCreated($userId: String!) {
+  chatCreated(userId: $userId) {
     id
     name
   }

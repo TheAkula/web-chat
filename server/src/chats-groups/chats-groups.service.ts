@@ -4,7 +4,7 @@ import { ChatLink } from 'src/chats/chat-link.model';
 import { UserLink } from 'src/users/user-link.model';
 import { User } from 'src/users/user.model';
 import { Repository } from 'typeorm';
-import { ChatsGroup } from './chats-group.entity';
+import { ChatsGroup } from './chats-group.model';
 import { ChatsGroup as ChatsGroupModel } from './chats-group.model';
 import { CreateChatsGroupDto } from './dto/create-chats-group.dto';
 
@@ -49,19 +49,20 @@ export class ChatsGroupsService {
     name,
     user,
     imgUrl,
-  }: CreateChatsGroupDto): Promise<ChatsGroupModel> {
+  }: CreateChatsGroupDto): Promise<ChatsGroup> {
     const newChatsGroup = this.chatsGroupsRepository.create({
       imgUrl,
       name,
       users: [user],
     });
-    return await this.chatsGroupsRepository.save(newChatsGroup);
+    await this.chatsGroupsRepository.save(newChatsGroup);
+    return newChatsGroup;
   }
 
   async getMyChatsGroups(user: User): Promise<ChatsGroup[]> {
     return this.chatsGroupsRepository
-      .createQueryBuilder('chatsgroup')
-      .innerJoin('chatsgroup.users', 'user', 'user.id = :userId', {
+      .createQueryBuilder('chatsGroup')
+      .innerJoin('chatsGroup.users', 'user', 'user.id = :userId', {
         userId: user.id,
       })
       .getMany();

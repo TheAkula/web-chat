@@ -32,12 +32,14 @@ export class MessagesResolver {
 
   @Subscription(() => Message, {
     nullable: true,
-    filter(payload, variables) {
-      console.log(payload, variables);
-      return true;
+    filter(payload, variables, context) {
+      return payload.messageCreated.users.includes(variables.userId);
+    },
+    resolve(payload, args, context, info) {
+      return payload.messageCreated.message;
     },
   })
-  messageCreated() {
+  messageCreated(@Args('userId') userId: string) {
     return this.pubSub.asyncIterator('MESSAGE_CREATED');
   }
 
@@ -47,15 +49,14 @@ export class MessagesResolver {
     @Args() args: CreateMessageArgs,
     @CurrentUser() author: User,
   ): Promise<Message> {
-    const newMessage = await this.messagesService.createMessage({
+    const messageData = await this.messagesService.createMessage({
       ...args,
       author,
     });
-    console.log('message created');
     this.pubSub.publish('MESSAGE_CREATED', {
-      messageCreated: newMessage,
+      messageCreated: messageData,
     });
-    return newMessage;
+    return messageData.message;
   }
 
   @ResolveField('chat', () => ChatLink)

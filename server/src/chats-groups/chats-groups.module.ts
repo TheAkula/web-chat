@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PubSubProvider } from 'src/pub-sub';
 import { UsersModule } from 'src/users/users.module';
-import { ChatsGroup } from './chats-group.entity';
+import { ChatsGroup } from './chats-group.model';
 import { ChatsGroupsResolver } from './chats-groups.resolver';
 import { ChatsGroupsService } from './chats-groups.service';
 

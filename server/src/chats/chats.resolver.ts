@@ -41,8 +41,14 @@ export class ChatsResolver {
     return newChat;
   }
 
-  @Subscription(() => Chat)
-  chatCreated() {
+  @Subscription(() => Chat, {
+    filter(payload, variables, context) {
+      return payload.chatCreated.users
+        .map((user) => user.id)
+        .includes(variables.userId);
+    },
+  })
+  chatCreated(@Args('userId') userId: string) {
     return this.pubSub.asyncIterator('CHAT_CREATED');
   }
 

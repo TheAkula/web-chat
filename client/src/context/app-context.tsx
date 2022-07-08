@@ -2,6 +2,7 @@ import {
   createContext,
   memo,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -13,34 +14,27 @@ import {
   ChatCreatedSubscription,
   ChatsGroupCreatedDocument,
   ChatsGroupCreatedSubscription,
+  Exact,
   MessageCreatedDocument,
   MessageCreatedSubscription,
   MessagesQuery,
   MyChatsGroupsQuery,
   MyChatsQuery,
-  useMessageCreatedSubscription,
   useMessagesLazyQuery,
   useMyChatsGroupsLazyQuery,
   useMyChatsLazyQuery,
 } from "../generated/graphql";
 import { useAuthContext } from "./auth-context";
 
-interface ContextChatsGroups {
-  items?: MyChatsGroupsQuery["myChatsGroups"];
-}
-
-interface ContextChats {
-  items?: MyChatsQuery["chats"];
-}
-
-interface ContextMessages {
-  items?: MessagesQuery["messages"];
-}
+type ContextDataField<T extends any[]> = {
+  items?: T;
+  loading: boolean;
+};
 
 interface AppContextState {
-  chatsGroups: ContextChatsGroups;
-  chats: ContextChats;
-  messages: ContextMessages;
+  chatsGroups: ContextDataField<MyChatsGroupsQuery["myChatsGroups"]>;
+  chats: ContextDataField<MyChatsQuery["chats"]>;
+  messages: ContextDataField<MessagesQuery["messages"]>;
 }
 
 type AppContextValue = AppContextState & {
@@ -51,9 +45,11 @@ type AppContextValue = AppContextState & {
 };
 
 const initialState: AppContextState = {
-  chatsGroups: {},
-  chats: { items: [] },
-  messages: { items: [] },
+  chatsGroups: {
+    loading: false,
+  },
+  chats: { items: [], loading: false },
+  messages: { items: [], loading: false },
 };
 
 const AppContext = createContext<AppContextValue>({
@@ -69,13 +65,15 @@ interface Props {
 }
 
 export const AppContextProvider = memo(({ children }: Props) => {
-  const { userToken } = useAuthContext();
+  const { userToken, id } = useAuthContext();
 
   const [chosenChatsGroup, setChosenChatsGroup] = useState("");
   const [chosenChat, setChosenChat] = useState("");
   const [chatMessagesQuery, chatMessages] = useMessagesLazyQuery();
   const [myChatsQuery, myChats] = useMyChatsLazyQuery();
   const [myChatsGroupsQuery, myChatsGroups] = useMyChatsGroupsLazyQuery();
+  const [isSubscribedMessages, setIsSubscribedMessages] = useState(false);
+  const [isSubscribedChats, setIsSubscribedChats] = useState(false);
 
   useEffect(() => {
     async function initApp() {
@@ -84,10 +82,17 @@ export const AppContextProvider = memo(({ children }: Props) => {
         localStorage.getItem(LocalStorageKeys.CHOSEN_CHATS_GROUP) ||
         myChatsGroupsData.data?.myChatsGroups[0].id ||
         "";
+      if (!chatsGroupId) return;
       setChosenChatsGroup(chatsGroupId);
       localStorage.setItem(LocalStorageKeys.CHOSEN_CHATS_GROUP, chatsGroupId);
-      myChatsGroupsData.subscribeToMore<ChatsGroupCreatedSubscription>({
+      myChatsGroupsData.subscribeToMore<
+        ChatsGroupCreatedSubscription,
+        Exact<{ userId: string }>
+      >({
         document: ChatsGroupCreatedDocument,
+        variables: {
+          userId: id || "",
+        },
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data.chatsGroupCreated) {
             return prev;
@@ -102,89 +107,132 @@ export const AppContextProvider = memo(({ children }: Props) => {
           };
         },
       });
-      const myChatsQueryData = await myChatsQuery({
-        variables: {
-          id: chatsGroupId,
-        },
-      });
-      const chatId =
-        localStorage.getItem(LocalStorageKeys.CHOSEN_CHAT) ||
-        myChatsQueryData.data?.chats[0].id ||
-        "";
-      setChosenChat(chatId);
-      localStorage.setItem(LocalStorageKeys.CHOSEN_CHAT, chatId);
-      myChatsQueryData.subscribeToMore<ChatCreatedSubscription>({
-        document: ChatCreatedDocument,
-        updateQuery: (prev, { subscriptionData }) => {
-          if (!subscriptionData.data.chatCreated) {
-            return prev;
-          }
-          return {
-            ...prev,
-            chats: [...prev.chats, subscriptionData.data.chatCreated],
-          };
-        },
-      });
-      const chatMessagesQueryData = await chatMessagesQuery({
-        variables: {
-          id: chatId,
-        },
-      });
+    }
+    if (userToken && id) {
+      initApp();
+    }
+  }, [userToken, myChatsGroupsQuery, myChatsQuery, chatMessagesQuery, id]);
 
-      chatMessagesQueryData.subscribeToMore<MessageCreatedSubscription>({
-        document: MessageCreatedDocument,
-        onError(error) {
-          console.log(error);
+  useEffect(() => {
+    let promise;
+    if (chosenChatsGroup) {
+      promise = myChatsQuery({
+        variables: {
+          id: chosenChatsGroup,
         },
-        updateQuery: (prev, { subscriptionData }) => {
-          if (subscriptionData.data && subscriptionData.data.messageCreated) {
-            const newMessages = prev.messages
-              ? prev.messages.concat(subscriptionData.data.messageCreated)
-              : [subscriptionData.data.messageCreated];
+      });
+    }
+    if (!isSubscribedChats && chosenChatsGroup) {
+      setIsSubscribedChats(true);
+      promise?.then((data) => {
+        const chatId =
+          localStorage.getItem(chosenChatsGroup) ||
+          data.data?.chats[0].id ||
+          "";
+        if (!chatId) return;
+        setChosenChat(chatId);
+        data.subscribeToMore<
+          ChatCreatedSubscription,
+          Exact<{ userId: string }>
+        >({
+          document: ChatCreatedDocument,
+          variables: {
+            userId: id || "",
+          },
+          updateQuery: (prev, { subscriptionData }) => {
+            if (!subscriptionData.data.chatCreated) {
+              return prev;
+            }
             return {
               ...prev,
-              messages: newMessages,
+              chats: [...prev.chats, subscriptionData.data.chatCreated],
             };
-          }
-          return {
-            ...prev,
-            messages: prev.messages,
-          };
+          },
+        });
+      });
+    }
+  }, [chosenChatsGroup, myChatsQuery, isSubscribedChats, id]);
+
+  useEffect(() => {
+    let promise;
+    if (chosenChat) {
+      promise = chatMessagesQuery({
+        variables: {
+          id: chosenChat,
         },
       });
     }
-    if (userToken) {
-      initApp();
-      console.log("some");
+    if (!isSubscribedMessages && chosenChat) {
+      setIsSubscribedMessages(true);
+      promise?.then((data) =>
+        data.subscribeToMore<
+          MessageCreatedSubscription,
+          Exact<{ userId: string }>
+        >({
+          document: MessageCreatedDocument,
+          variables: {
+            userId: id || "",
+          },
+          onError(error) {
+            console.log(error);
+          },
+          updateQuery: (prev, { subscriptionData }) => {
+            if (subscriptionData.data && subscriptionData.data.messageCreated) {
+              const newMessages = prev.messages
+                ? prev.messages.concat(subscriptionData.data.messageCreated)
+                : [subscriptionData.data.messageCreated];
+              return {
+                ...prev,
+                messages: newMessages,
+              };
+            }
+            return prev;
+          },
+        })
+      );
     }
-    return;
-  }, [userToken, myChatsGroupsQuery, myChatsQuery, chatMessagesQuery]);
+  }, [chosenChat, chatMessagesQuery, isSubscribedMessages, id]);
 
-  const chooseChat = (chosen: string) => {
-    setChosenChat(chosen);
-  };
+  const chooseChat = useCallback(
+    (chosen: string) => {
+      setChosenChat(chosen);
+      localStorage.setItem(chosenChatsGroup, chosen);
+    },
+    [chosenChatsGroup]
+  );
 
   const chooseChatsGroup = (chosen: string) => {
     setChosenChatsGroup(chosen);
+    setChosenChat(localStorage.getItem(chosen) || "");
   };
 
   const value: AppContextValue = useMemo(
     () => ({
       chatsGroups: {
         items: myChatsGroups.data?.myChatsGroups,
+        loading: myChatsGroups.loading,
       },
       chats: {
         items: myChats.data?.chats,
+        loading: myChats.loading,
       },
       messages: {
         items: chatMessages.data?.messages,
+        loading: chatMessages.loading,
       },
       chosenChat,
       chosenChatsGroup,
       chooseChat,
       chooseChatsGroup,
     }),
-    [chatMessages, myChatsGroups, myChats, chosenChat, chosenChatsGroup]
+    [
+      chatMessages,
+      myChatsGroups,
+      myChats,
+      chosenChat,
+      chosenChatsGroup,
+      chooseChat,
+    ]
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

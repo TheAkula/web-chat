@@ -1,5 +1,5 @@
-subscription messageCreated {
-  messageCreated {
+subscription messageCreated($userId: String!) {
+  messageCreated(userId: $userId) {
     id
     author {
       id

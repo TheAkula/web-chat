@@ -17,41 +17,51 @@ import { PubSubProvider } from 'src/pub-sub';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/current-user.decorator';
 import { User } from 'src/users/user.model';
+import { UsersService } from 'src/users/users.service';
 
+@UseGuards(GqlAuthGuard)
 @Resolver(() => ChatsGroup)
 export class ChatsGroupsResolver {
   constructor(
     private chatsGroupsService: ChatsGroupsService,
     private pubSub: PubSubProvider,
+    private usersService: UsersService,
   ) {}
 
-  @Query(() => ChatsGroup, { name: 'chatsGroups' })
+  @Query(() => ChatsGroup, { name: 'chatsGroup' })
   getChatsGroup(@Args('id') id: string): Promise<ChatsGroup> {
     return this.chatsGroupsService.getChatsGroup(id);
   }
 
-  @UseGuards(GqlAuthGuard)
   @Query(() => [ChatsGroup], { name: 'myChatsGroups' })
   getMyChatsGroups(@CurrentUser() user: User): Promise<ChatsGroup[]> {
     return this.chatsGroupsService.getMyChatsGroups(user);
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => ChatsGroup)
   async createChatsGroup(
     @Args() createChatsGroupArgs: CreateChatsGroupArgs,
     @CurrentUser() user: User,
   ) {
-    const newChat = await this.chatsGroupsService.createChatsGroup({
+    const newChatsGroup = await this.chatsGroupsService.createChatsGroup({
       ...createChatsGroupArgs,
       user,
     });
-    this.pubSub.publish('CHATS_GROUP_CREATED', { chatsGroupdCreated: newChat });
-    return newChat;
+    this.pubSub.publish('CHATS_GROUP_CREATED', {
+      chatsGroupCreated: newChatsGroup,
+    });
+    return newChatsGroup;
   }
 
-  @Subscription(() => ChatsGroup, { name: 'chatsGroupCreated', nullable: true })
-  chatsGroupAdded() {
+  @Subscription(() => ChatsGroup, {
+    name: 'chatsGroupCreated',
+    filter(payload, variables, context) {
+      return payload.chatsGroupCreated.users
+        .map((user) => user.id)
+        .includes(variables.userId);
+    },
+  })
+  chatsGroupAdded(@Args('userId') userId: string) {
     return this.pubSub.asyncIterator('CHATS_GROUP_CREATED');
   }
 

@@ -1,55 +1,34 @@
-import React, { memo, Reducer, useContext, useMemo, useReducer } from "react";
+import React, {
+  memo,
+  Reducer,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
 import { LocalStorageKeys } from "../constants";
-import { AuthContextType } from "../types";
-
-interface AuthAction {
-  type: AuthActions;
-  payload?: any;
-}
+import { MyUserInfoQuery, useMyUserInfoLazyQuery } from "../generated/graphql";
 
 type AuthContextValue = {
-  authDispatch: React.Dispatch<AuthAction>;
-} & AuthContextType;
+  changeUserToken: (s: string) => void;
+  userToken: string | null;
+  changeAuthData: (s: MyUserInfoQuery["myUserInfo"]) => void;
+} & Partial<MyUserInfoQuery["myUserInfo"]>;
 
-const initialState: AuthContextType = {
+const initialState: MyUserInfoQuery["myUserInfo"] = {
   id: "",
   firstName: "",
   lastName: "",
-  userToken: window.localStorage.getItem(LocalStorageKeys.USER_TOKEN_KEY) || "",
   email: "",
 };
 
 const AuthContext = React.createContext<AuthContextValue>({
   ...initialState,
-  authDispatch: () => {},
+  userToken: null,
+  changeUserToken(s) {},
+  changeAuthData(s) {},
 });
-
-export enum AuthActions {
-  LOGIN = "LOGIN",
-  SIGNUP = "SIGNUP",
-  LOGOUT = "LOGOUT",
-  ACTIVATE_USER = "ACTIVATE_USER",
-}
-
-const reducer: Reducer<AuthContextType, AuthAction> = (state, action) => {
-  switch (action.type) {
-    case AuthActions.LOGIN:
-      return {
-        ...action.payload,
-      };
-    case AuthActions.SIGNUP:
-      return {
-        ...action.payload,
-      };
-    case AuthActions.LOGOUT:
-      localStorage.setItem(LocalStorageKeys.USER_TOKEN_KEY, "");
-      return {
-        ...initialState,
-      };
-    default:
-      throw new Error(`Invalid action type: "${action.type}"`);
-  }
-};
 
 interface AuthContextProviderProps {
   children: React.ReactNode;
@@ -57,11 +36,28 @@ interface AuthContextProviderProps {
 
 export const AuthContextProvider = memo(
   ({ children }: AuthContextProviderProps) => {
-    const [authState, authDispatch] = useReducer(reducer, initialState);
+    const [userToken, setUserToken] = useState(
+      localStorage.getItem(LocalStorageKeys.USER_TOKEN_KEY) || ""
+    );
+
+    const [authData, setAuthData] = useState<MyUserInfoQuery["myUserInfo"]>();
+
+    useEffect(() => {
+      if (userToken) {
+      }
+    }, [userToken]);
+
+    const changeUserToken = (s: string) => {
+      setUserToken(s);
+    };
+
+    const changeAuthData = (data: MyUserInfoQuery["myUserInfo"]) => {
+      setAuthData(data);
+    };
 
     const value: AuthContextValue = useMemo(
-      () => ({ ...authState, authDispatch }),
-      [authState]
+      () => ({ userToken, ...authData, changeUserToken, changeAuthData }),
+      [authData, userToken]
     );
 
     return (

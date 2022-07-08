@@ -2,26 +2,30 @@ import styled from "styled-components";
 import { baseTheme } from "../../theme/baseTheme";
 
 interface ChatGroupProps {
-  chatGroupId?: string;
-  clicked: (id?: string) => void;
+  id?: string;
+  clicked: (id: string) => void;
   imgUrl?: string | null;
   name: string;
+  isActive?: boolean;
 }
 
 export const ChatsGroup = ({
-  chatGroupId,
+  id,
   clicked,
   name,
   imgUrl,
+  isActive,
 }: ChatGroupProps) => {
   const onClickedHandler = () => {
-    clicked(chatGroupId);
+    clicked(id || "");
   };
 
   return (
-    <StyledChatsGroup onClick={onClickedHandler}>
-      {imgUrl ? <img src={imgUrl} alt="" /> : <span>{name}</span>}
-    </StyledChatsGroup>
+    <StyledChatsGroupContainer isActive={!!isActive}>
+      <StyledChatsGroup onClick={onClickedHandler}>
+        {imgUrl ? <img src={imgUrl} alt="" /> : <span>{name}</span>}
+      </StyledChatsGroup>
+    </StyledChatsGroupContainer>
   );
 };
 
@@ -37,4 +41,17 @@ const StyledChatsGroup = styled.div`
   font-weight: 500;
   color: ${baseTheme.colors.white};
   cursor: pointer;
+`;
+
+interface ChatsGroupContainerProps {
+  isActive: boolean;
+}
+
+const StyledChatsGroupContainer = styled.div<ChatsGroupContainerProps>`
+  padding: 0 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-left: 3px solid
+    ${({ isActive }) => (isActive ? baseTheme.colors.white : "transparent")};
 `;

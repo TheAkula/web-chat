@@ -1,25 +1,23 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Chat } from 'src/chats/chat.entity';
+import { Chat } from 'src/chats/chat.model';
 import { Chat as ChatModel } from './chat.model';
 import { Repository } from 'typeorm';
 import { UserLink } from 'src/users/user-link.model';
 import { MessageLink } from 'src/messages/message-link.model';
 import { ChatsGroupsService } from 'src/chats-groups/chats-groups.service';
 import { CreateChatDto } from './dto/create-chat.dto';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class ChatsService {
   constructor(
     @InjectRepository(Chat) private chatsRepository: Repository<Chat>,
     private chatsGroupsService: ChatsGroupsService,
+    private usersSerive: UsersService,
   ) {}
 
-  async createChat({
-    name,
-    user,
-    chatsGroupId,
-  }: CreateChatDto): Promise<ChatModel> {
+  async createChat({ name, user, chatsGroupId }: CreateChatDto): Promise<Chat> {
     const chatsGroup = await this.chatsGroupsService.getChatsGroup(
       chatsGroupId,
     );
@@ -33,7 +31,7 @@ export class ChatsService {
       users: [user],
       chatsGroup: chatsGroup,
     });
-    return this.chatsRepository.save(chat);
+    return await this.chatsRepository.save(chat);
   }
 
   async getChatWithRelation(id: string, relation: string): Promise<ChatModel> {
